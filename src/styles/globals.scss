@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./richtext.scss";
+@import "./fonts.scss";
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag {
+  transform: skewX(-15deg);
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.oswald {
+  font-family: "Oswald", Arial, Helvetica, sans-serif;
+}

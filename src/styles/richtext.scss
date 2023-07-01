@@ -1,0 +1,43 @@
+.richText {
+  p {
+    @apply mb-8 text-lg;
+  }
+
+  blockquote {
+    @apply pl-8 border-l-4 italic;
+
+    p {
+      @apply text-xl;
+    }
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply mb-4;
+  }
+
+  h2,
+  h3,
+  h4 {
+    @apply text-3xl font-semibold;
+  }
+
+  h5 {
+    @apply text-2xl font-medium;
+  }
+
+  hr {
+    @apply my-4;
+  }
+
+  ul {
+    @apply mb-4 list-disc pl-6;
+  }
+
+  li {
+    @apply mb-2 text-lg;
+  }
+}
