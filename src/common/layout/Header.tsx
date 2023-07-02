@@ -1,7 +1,6 @@
-import React from "react";
-
-//
+import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 // Components
 import Wrapper from "../components/Wrapper";
@@ -11,40 +10,72 @@ import Button from "../components/Button";
 import { Search } from "../components/Icon";
 
 type HeaderProps = {
+  siteData: any;
   categories: any[];
 };
 
-const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
+const Header: React.FC<HeaderProps> = ({ siteData, categories = [] }) => {
+  const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const onSearchHandler: React.FormEventHandler = (e) => {
+    e.preventDefault();
+
+    if (query) {
+      router.push(
+        {
+          pathname: "/search",
+          query: {
+            q: query,
+          },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  };
+
   return (
     <>
       <header className="w-full shadow-sm">
         <Wrapper>
           <div className="flex items-center justify-end py-4 lg:justify-between">
             {/* Logo */}
-            <div className="lg:-translate-x-1/2 lg:absolute left-1/2">
-              <Link href={"/"}>
-                <img
-                  className="h-[26px] lg:h-[34px] block"
-                  src="/logo.png"
-                  alt="logo"
-                />
-              </Link>
-            </div>
+            {siteData.site_logo && (
+              <div className="lg:-translate-x-1/2 lg:absolute left-1/2">
+                <Link href={"/"}>
+                  <h1 className="hidden">{siteData.name}</h1>
+                  <img
+                    className="h-[26px] lg:h-[34px] block"
+                    src={siteData.site_logo.src}
+                    alt="Site Logo"
+                  />
+                </Link>
+              </div>
+            )}
             <div className="flex-1 lg:hidden"></div>
 
             {/* Icon */}
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2 text-gray-500 ">
               <Search size={20} />
-              <p className="hidden text-sm uppercase lg:block">Search</p>
+              <form onSubmit={onSearchHandler}>
+                <input
+                  placeholder="Search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="w-16 md:w-36"
+                />
+              </form>
             </div>
 
-            {/* Buttons */}
             <div>
-              <button className="hidden text-sm font-normal uppercase lg:inline hover:underline">
-                Sign in
-              </button>
-
-              <Button variant="left">Subscribe</Button>
+              <a
+                href={`${process.env.WORDPRESS_URL}/wp-admin`}
+                target="__blank"
+                rel="noreferrer"
+              >
+                <Button variant="left">Sign in</Button>
+              </a>
             </div>
           </div>
         </Wrapper>
@@ -58,14 +89,14 @@ const Header: React.FC<HeaderProps> = ({ categories = [] }) => {
 
                   return (
                     <React.Fragment key={category.id}>
-                      <li className="text-sm font-semibold uppercase oswald">
+                      <li className="flex items-center text-sm font-semibold uppercase oswald">
                         <Link href={`/category/${category.slug}`}>
                           {category.name}
                         </Link>
+                        {!isLast && (
+                          <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>
+                        )}
                       </li>
-                      {!isLast && (
-                        <span className="h-4 w-[1px] bg-gray-300"></span>
-                      )}
                     </React.Fragment>
                   );
                 })}

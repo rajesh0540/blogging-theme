@@ -1,23 +1,60 @@
 import React from "react";
 import { GetStaticProps, NextPage } from "next";
 
+// Components
+import SEOYoast from "@/common/components/SEOYoast";
+import WebStories from "@/common/layout/WebStories";
+
 // Containers
 import Trending from "@/containers/Home/Trending";
-import CategoryPosts from "@/containers/Home/CategoryPosts";
+import CategoryPosts, {
+  CategoryPostsArrangements,
+} from "@/containers/Home/CategoryPosts";
 import MoreNews from "@/containers/Home/MoreNews";
+
 //
 import Wordpress from "@/services/Wordpress";
+import optimizeImage from "@/utils/functions/optimizeImage";
 
-const Home: NextPage<{ posts: any[]; categoriesWithPosts: any[] }> = ({
-  posts,
-  categoriesWithPosts,
-}) => {
+let resultsPerPage = 9;
+const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
+
+const Home: NextPage<{
+  layoutData: any;
+  posts: any[];
+  categoriesWithPosts: any[];
+  trendingPosts: any[];
+  seo: any;
+}> = ({ layoutData, posts, categoriesWithPosts, trendingPosts, seo }) => {
+  const webStories = layoutData.webStories;
+  const { name, description, site_icon } = layoutData.siteData;
+  const { schema, canonical, og_url } = seo;
+
+  console.log("trendingPosts >>", trendingPosts);
+
   return (
     <>
-      <Trending posts={posts} />
+      <SEOYoast
+        yoast_head_json={{
+          title: `Home - ${name}`,
+          description,
+          favIcon: site_icon.src,
+          og_locale: "en_US",
+          og_type: "website",
+          og_title: `Home - ${name}`,
+          og_description: description,
+          og_site_name: name,
+          canonical,
+          og_url,
+          schema,
+        }}
+        pagePath="/"
+      />
+      {webStories?.length > 0 && <WebStories webStories={webStories} />}
 
+      <Trending trendingPosts={trendingPosts} posts={posts} />
       {categoriesWithPosts.map((category, i) => {
-        let arrangement = "one";
+        let arrangement: CategoryPostsArrangements = "one";
 
         if (i === 1) {
           arrangement = "three";
@@ -28,7 +65,6 @@ const Home: NextPage<{ posts: any[]; categoriesWithPosts: any[] }> = ({
         return (
           <CategoryPosts
             key={category.id}
-            // @ts-ignore
             arrangement={arrangement}
             dark={i === 1}
             name={category.name}
@@ -37,7 +73,7 @@ const Home: NextPage<{ posts: any[]; categoriesWithPosts: any[] }> = ({
         );
       })}
 
-      <MoreNews posts={posts} />
+      <MoreNews posts={posts} resultsPerPage={resultsPerPage} />
     </>
   );
 };
@@ -45,16 +81,16 @@ const Home: NextPage<{ posts: any[]; categoriesWithPosts: any[] }> = ({
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const layoutData = await Wordpress.getLayoutData();
-    const posts = await Wordpress.getAllPosts();
+    const posts = await Wordpress.getAllPosts(resultsPerPage);
 
-    await Wordpress.populatePostsImages(posts);
+    await Wordpress.populatePostsImages(posts, optimizeImage);
 
     const categoriesWithPosts = [];
     for (const category of layoutData.categories) {
       if (categoriesWithPosts.length === 4) break;
 
       const categoryPosts = await Wordpress.getCategoryPosts([category.id]);
-      await Wordpress.populatePostsImages(categoryPosts);
+      await Wordpress.populatePostsImages(categoryPosts, optimizeImage);
 
       categoriesWithPosts.push({
         id: category.id,
@@ -62,6 +98,12 @@ export const getStaticProps: GetStaticProps = async () => {
         slug: category.slug,
         posts: categoryPosts,
       });
+    }
+
+    let trendingPosts = [];
+    if (trendingCategoryId) {
+      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 5);
+      await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
     }
 
     posts.forEach((post: any) => {
@@ -80,25 +122,24 @@ export const getStaticProps: GetStaticProps = async () => {
 
     categoriesWithPosts.forEach((category: any) => {
       category.posts.forEach((post: any) => {
-        const categoryId = post.categories[0];
-
-        if (!categoryId) return;
-
-        const category = layoutData.categories.find(
-          (category: any) => category.id === categoryId
-        );
-
-        if (!category) return;
-
-        post.category = category;
+        post.category = {
+          name: category.name,
+          slug: category.slug,
+        };
       });
     });
+
+    const seo = await Wordpress.getPageSchema(
+      `${process.env.WORDPRESS_URL}/` as string
+    );
 
     return {
       props: {
         layoutData,
         posts,
         categoriesWithPosts,
+        trendingPosts,
+        seo,
       },
     };
   } catch (e) {

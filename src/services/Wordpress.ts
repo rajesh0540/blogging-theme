@@ -1,23 +1,64 @@
-import axiosInstacne from "@/config/axios";
+import axios from "axios";
 
 //
 import { CommentFormValues } from "@/common/components/CommentForm";
+import type { OptimizeImage } from "@/utils/functions/optimizeImage";
+
+const axiosInstacne = axios.create({
+  baseURL: process.env.WORDPRESS_JSON_URL,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "*/*",
+  },
+});
+
+const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
 class Wordpress {
   static async getLayoutData() {
-    const siteData = await this.getSiteData();
-    const categories = await this.getAllCategories();
+    const globalAny: any = global;
 
-    return {
+    if (globalAny.layoutCache) {
+      return globalAny.layoutCache;
+    }
+
+    const siteData = await this.getSiteData();
+    const categories = await this.getAllCategories(99);
+    const webStories = await this.getAllWebStories();
+
+    const layoutData = {
       siteData,
-      categories: categories.map((category: any) => {
+      categories: categories
+        .filter((category: any) => {
+          return category.count && category.id !== trendingCategoryId;
+        })
+        .map((category: any) => {
+          return {
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            description: category.description,
+          };
+        }),
+      webStories: webStories.map((story: any) => {
         return {
-          id: category.id,
-          name: category.name,
-          slug: category.slug,
-          description: category.description,
+          slug: story.slug,
         };
       }),
     };
+
+    globalAny.layoutCache = layoutData;
+
+    return layoutData;
+  }
+  static async getIndexSitemap() {
+    const sitemap = await axiosInstacne.get("/../sitemap_index.xml");
+
+    return sitemap.data;
+  }
+  static async getSitemap(fileName: string) {
+    const sitemap = await axiosInstacne.get(`/../${fileName}`);
+
+    return sitemap.data;
   }
 
   /**
@@ -41,28 +82,39 @@ class Wordpress {
   /**
    * Post endpoints
    */
-  static async getAllPosts(limit = 10) {
-    const response = await axiosInstacne.get(`/wp/v2/posts?per_page=${limit}`);
-
-    return response.data;
-  }
-  static async getCategoryPosts(categories: number[], limit = 10) {
+  static async getAllPosts(limit = 10, page = 1) {
     const response = await axiosInstacne.get(
-      `/wp/v2/posts?categories=${categories.join(",")}&per_page=${limit}`
+      `/wp/v2/posts?per_page=${limit}&page=${page}`
     );
 
     return response.data;
   }
-  static async getTagPosts(tags: number[]) {
+  static async searchPosts(query: string) {
     const response = await axiosInstacne.get(
-      `/wp/v2/posts?tags=${tags.join(",")}`
+      `/wp/v2/posts?search=${query}&search_columns=post_title&per_page=9`
     );
 
     return response.data;
   }
-  static async getAuthorPosts(author: number[]) {
+  static async getCategoryPosts(categories: number[], limit = 10, page = 1) {
     const response = await axiosInstacne.get(
-      `/wp/v2/posts?author=${author.join(",")}`
+      `/wp/v2/posts?categories=${categories.join(
+        ","
+      )}&per_page=${limit}&page=${page}`
+    );
+
+    return response.data;
+  }
+  static async getTagPosts(tags: number[], limit = 10, page = 1) {
+    const response = await axiosInstacne.get(
+      `/wp/v2/posts?tags=${tags.join(",")}&per_page=${limit}&page=${page}`
+    );
+
+    return response.data;
+  }
+  static async getAuthorPosts(author: number[], limit = 10, page = 1) {
+    const response = await axiosInstacne.get(
+      `/wp/v2/posts?author=${author.join(",")}&per_page=${limit}&page=${page}`
     );
 
     return response.data;
@@ -74,35 +126,84 @@ class Wordpress {
 
     return post;
   }
-  static async populatePostsImages(posts: any[]) {
+  static async populatePostsImages(
+    posts: any[],
+    optimizeImage?: OptimizeImage
+  ) {
+    const noImage = {
+      full: {
+        src: "/no-image.jpg",
+        height: 200,
+        width: 223,
+        placeholder: "",
+      },
+      thumbnail: {
+        src: "/no-image.jpg",
+        height: 200,
+        width: 223,
+        placeholder: "",
+      },
+      alt: "No image found",
+    };
+
     const ids = posts.map((post) => post.featured_media).filter((id) => id);
 
-    const response = await axiosInstacne.get(
-      `/wp/v2/media?include=${ids.join(",")}&per_page=${ids.length}`
-    );
-    const medias = response.data;
+    let medias = [];
 
-    posts.forEach((post) => {
-      if (!post.featured_media) return;
+    if (ids.length > 0) {
+      const response = await axiosInstacne.get(
+        `/wp/v2/media?include=${ids.join(",")}&per_page=${ids.length}`
+      );
+      medias = response.data;
+    }
+
+    for (const post of posts) {
+      if (!post.featured_media) {
+        post.featured_media = noImage;
+        continue;
+      }
 
       const media = medias.find(
         (media: any) => media.id === post.featured_media
       );
 
-      if (!media) return;
+      if (!media) {
+        post.featured_media = noImage;
+        continue;
+      }
 
       const { thumbnail, full } = media.media_details.sizes;
 
-      post.featured_media = full.source_url;
-      post.thumbnail = thumbnail.source_url;
-    });
+      const fullOptimized = await optimizeImage?.({ src: full.source_url });
+      const thumbnailOptimized = await optimizeImage?.({
+        src: thumbnail.source_url,
+      });
+
+      post.featured_media = {
+        full: {
+          src: full.source_url,
+          height: full.height,
+          width: full.width,
+          placeholder: fullOptimized?.placeholder || "",
+        },
+        thumbnail: {
+          src: thumbnail.source_url,
+          height: thumbnail.height,
+          width: thumbnail.width,
+          placeholder: thumbnailOptimized?.placeholder || "",
+        },
+        alt: media.alt_text,
+      };
+    }
   }
 
   /**
    * Category endpoints
    */
-  static async getAllCategories() {
-    const response = await axiosInstacne.get("/wp/v2/categories");
+  static async getAllCategories(limit = 10) {
+    const response = await axiosInstacne.get(
+      `/wp/v2/categories?per_page=${limit}`
+    );
 
     return response.data;
   }
@@ -122,17 +223,55 @@ class Wordpress {
     const response = await axiosInstacne.get("/");
     const details = response.data;
 
+    let site_icon = {
+      src: "",
+      height: 0,
+      width: 0,
+    };
+    let site_logo = {
+      src: "",
+      height: 0,
+      width: 0,
+    };
+
+    if (details.site_icon) {
+      const response = await axiosInstacne.get(
+        `/wp/v2/media/${details.site_icon}`
+      );
+      const { source_url, width, height } =
+        response.data.media_details.sizes["site_icon-32"];
+
+      site_icon.src = source_url;
+      site_icon.height = height;
+      site_icon.width = width;
+    }
+
+    if (details.site_logo) {
+      const response = await axiosInstacne.get(
+        `/wp/v2/media/${details.site_logo}`
+      );
+      const { source_url, width, height } =
+        response.data.media_details.sizes.full;
+
+      site_logo.src = source_url;
+      site_logo.height = height;
+      site_logo.width = width;
+    }
+
     return {
       name: details.name,
       description: details.description,
+      url: details.url,
+      site_logo,
+      site_icon,
     };
   }
 
   /**
    * Tag endpoints
    */
-  static async getAllTags() {
-    const response = await axiosInstacne.get("/wp/v2/tags");
+  static async getAllTags(limit = 10) {
+    const response = await axiosInstacne.get(`/wp/v2/tags?per_page=${limit}`);
 
     return response.data;
   }
@@ -151,18 +290,24 @@ class Wordpress {
     const response = await axiosInstacne.get(`/wp/v2/media/${mediaId}`);
 
     const { thumbnail, full } = response.data.media_details.sizes;
+    const {
+      caption: { rendered },
+      alt_text,
+    } = response.data;
 
     return {
       full: full.source_url,
       thumbnail: thumbnail.source_url,
+      caption: rendered,
+      alt: alt_text,
     };
   }
 
   /**
    * Author endpoints
    */
-  static async getAllAuthors() {
-    const response = await axiosInstacne.get(`/wp/v2/users`);
+  static async getAllAuthors(limit = 10) {
+    const response = await axiosInstacne.get(`/wp/v2/users?per_page=${limit}`);
 
     return response.data;
   }
@@ -205,6 +350,47 @@ class Wordpress {
     const response = await axiosInstacne.get(`/wp/v2/comments?post=${postId}`);
 
     return response.data;
+  }
+
+  /**
+   * Web stories endpoints
+   */
+  static async getAllWebStories() {
+    try {
+      const response = await axiosInstacne.get("/web-stories/v1/web-story");
+
+      return response.data;
+    } catch (e) {
+      return [];
+    }
+  }
+  static async getWebStoryBySlug(slug: string) {
+    try {
+      const response = await axiosInstacne.get(
+        `/web-stories/v1/web-story?slug=${slug}`
+      );
+
+      return response.data[0];
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  /**
+   * Yoast Endpoints
+   */
+  static async getPageSchema(url: string) {
+    const response = await axiosInstacne.get(
+      `/yoast/v1/get_head?url=${encodeURIComponent(url)}`
+    );
+
+    const { schema, canonical, og_url } = response.data.json;
+
+    return {
+      schema,
+      canonical,
+      og_url,
+    };
   }
 }
 

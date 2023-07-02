@@ -1,15 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
+
+// Container
+import PostSubHeading from "@/common/containers/PostSubHeading";
 
 // Components
 import Wrapper from "@/common/components/Wrapper";
-import PostSubHeading from "@/common/containers/PostSubHeading";
+import Button from "@/common/components/Button";
 import Post1 from "@/common/components/Post1";
+
+//
+import useListing from "@/utils/hooks/useListing";
+import Wordpress from "@/services/Wordpress";
 
 type LatestPostsProps = {
   posts: any[];
+  resultsPerPage: number;
 };
 
-const LatestPosts: React.FC<LatestPostsProps> = ({ posts }) => {
+const LatestPosts: React.FC<LatestPostsProps> = ({
+  posts: _posts,
+  resultsPerPage,
+}) => {
+  const [totalCount, setTotalCount] = useState(Infinity);
+
+  const { posts, loading, loadMore, canLoadMore } = useListing({
+    key: "static",
+    posts: _posts,
+    totalCount,
+    loadMore: async (page) => {
+      const fetchedPosts = await Wordpress.getAllPosts(resultsPerPage, page);
+      await Wordpress.populatePostsImages(fetchedPosts);
+
+      const newTotalPosts = fetchedPosts.length + posts.length;
+
+      if (fetchedPosts.length < resultsPerPage) {
+        setTotalCount(newTotalPosts);
+      }
+
+      return fetchedPosts;
+    },
+  });
+
   return (
     <section>
       <Wrapper size="medium">
@@ -18,6 +49,13 @@ const LatestPosts: React.FC<LatestPostsProps> = ({ posts }) => {
           {posts.map((post) => (
             <Post1 key={post.id} post={post} />
           ))}
+        </div>
+        <div className="flex justify-center mt-4">
+          {canLoadMore && (
+            <Button disabled={loading} onClick={loadMore} variant="center">
+              {loading ? "Loading..." : "Load More"}
+            </Button>
+          )}
         </div>
       </Wrapper>
     </section>

@@ -1,28 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 
-//
-import Wordpress from "@/services/Wordpress";
+// Components
+import SEOYoast from "@/common/components/SEOYoast";
 
 // Containers
 import PostGrid from "@/common/containers/PostGrid";
 import Title from "@/common/containers/Title";
 
-const SingleAuthor: NextPage<{ author: any; posts: any[] }> = ({
-  author,
-  posts,
-}) => {
+//
+import Wordpress from "@/services/Wordpress";
+import useListing from "@/utils/hooks/useListing";
+import optimizeImage from "@/utils/functions/optimizeImage";
+
+const resultsPerPage = 9;
+
+const SingleAuthor: NextPage<{
+  layoutData: any;
+  author: any;
+  posts: any[];
+}> = ({ layoutData, author, posts: _posts }) => {
+  const { site_icon } = layoutData.siteData;
+  author.yoast_head_json.favIcon = site_icon.src;
+  author.yoast_head_json.description = author.description;
+
+  const [totalCount, setTotalCount] = useState(Infinity);
+
+  const { posts, loading, loadMore, canLoadMore } = useListing({
+    key: author.id,
+    posts: _posts,
+    totalCount,
+    loadMore: async (page) => {
+      const fetchedPosts = await Wordpress.getAuthorPosts(
+        [author.id],
+        resultsPerPage,
+        page
+      );
+      await Wordpress.populatePostsImages(fetchedPosts);
+
+      const newTotalPosts = fetchedPosts.length + posts.length;
+
+      if (fetchedPosts.length < resultsPerPage) {
+        setTotalCount(newTotalPosts);
+      }
+
+      return fetchedPosts;
+    },
+  });
+
   return (
     <>
+      <SEOYoast
+        yoast_head_json={author.yoast_head_json}
+        pagePath={`/author/${author.slug}`}
+      />
       <Title name={author.name} />
-      <PostGrid posts={posts} />
+      <PostGrid
+        posts={posts}
+        canLoadMore={canLoadMore}
+        loadMore={loadMore}
+        loading={loading}
+      />
     </>
   );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const authors = await Wordpress.getAllAuthors(99);
+
   return {
-    paths: [],
+    paths: authors.map((author: any) => {
+      return {
+        params: {
+          slug: author.slug,
+        },
+      };
+    }),
     fallback: "blocking",
   };
 };
@@ -38,9 +91,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       throw new Error();
     }
 
-    const posts = await Wordpress.getAuthorPosts([author.id]);
+    const posts = await Wordpress.getAuthorPosts(
+      [author.id],
+      resultsPerPage,
+      1
+    );
 
-    await Wordpress.populatePostsImages(posts);
+    await Wordpress.populatePostsImages(posts, optimizeImage);
 
     posts.forEach((post: any) => {
       const categoryId = post.categories[0];
@@ -63,14 +120,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         author,
         posts,
       },
-      revalidate: 30,
+      revalidate: 1800,
     };
   } catch (e) {
-    console.log("error >>", e);
-
     return {
       notFound: true,
-      revalidate: 1,
+      revalidate: 10,
     };
   }
 };

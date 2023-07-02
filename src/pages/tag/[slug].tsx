@@ -1,25 +1,69 @@
 import React from "react";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 
-//
-import Wordpress from "@/services/Wordpress";
+// Components
+import SEOYoast from "@/common/components/SEOYoast";
 
 // Containers
 import PostGrid from "@/common/containers/PostGrid";
 import Title from "@/common/containers/Title";
 
-const SingleTag: NextPage<{ tag: any; posts: any[] }> = ({ tag, posts }) => {
+//
+import Wordpress from "@/services/Wordpress";
+import useListing from "@/utils/hooks/useListing";
+import optimizeImage from "@/utils/functions/optimizeImage";
+
+const resultsPerPage = 9;
+
+const SingleTag: NextPage<{ layoutData: any; tag: any; posts: any[] }> = ({
+  layoutData,
+  tag,
+  posts: _posts,
+}) => {
+  const { site_icon } = layoutData.siteData;
+  tag.favIcon = site_icon.src;
+
+  const { posts, loading, loadMore, canLoadMore } = useListing({
+    key: tag.id,
+    posts: _posts,
+    totalCount: tag.count,
+    loadMore: async (page) => {
+      const posts = await Wordpress.getTagPosts([tag.id], resultsPerPage, page);
+
+      await Wordpress.populatePostsImages(posts);
+
+      return posts;
+    },
+  });
+
   return (
     <>
+      <SEOYoast
+        yoast_head_json={tag.yoast_head_json}
+        pagePath={`/tag/${tag.slug}`}
+      />
       <Title name={tag.name} />
-      <PostGrid posts={posts} />
+      <PostGrid
+        posts={posts}
+        canLoadMore={canLoadMore}
+        loadMore={loadMore}
+        loading={loading}
+      />
     </>
   );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const tags = await Wordpress.getAllTags(99);
+
   return {
-    paths: [],
+    paths: tags.map((tag: any) => {
+      return {
+        params: {
+          slug: tag.slug,
+        },
+      };
+    }),
     fallback: "blocking",
   };
 };
@@ -35,9 +79,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       throw new Error();
     }
 
-    const posts = await Wordpress.getTagPosts([tag.id]);
+    const posts = await Wordpress.getTagPosts([tag.id], resultsPerPage, 1);
 
-    await Wordpress.populatePostsImages(posts);
+    await Wordpress.populatePostsImages(posts, optimizeImage);
 
     posts.forEach((post: any) => {
       const categoryId = post.categories[0];
@@ -60,14 +104,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         tag,
         posts,
       },
-      revalidate: 30,
+      revalidate: 1800,
     };
   } catch (e) {
-    console.log("error >>", e);
-
     return {
       notFound: true,
-      revalidate: 1,
+      revalidate: 10,
     };
   }
 };

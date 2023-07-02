@@ -12,8 +12,8 @@ const Wrapper: React.FC<WrapperProps> = ({
   className,
 }) => {
   const sizeClasses = {
-    small: "max-w-[700px]",
-    medium: "max-w-[1200px]",
+    small: "max-w-[1080px]",
+    medium: "max-w-[1320px]",
   };
 
   return (

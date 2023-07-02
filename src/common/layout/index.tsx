@@ -10,13 +10,13 @@ type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children, layoutData }) => {
-  const { categories } = layoutData || {};
+  const { categories = [], siteData = {} } = layoutData || {};
 
   return (
     <>
-      <Header categories={categories} />
-      <main className="my-12">{children}</main>
-      <Footer />
+      <Header categories={categories} siteData={siteData} />
+      <main className="mt-6 mb-9">{children}</main>
+      <Footer siteData={siteData} />
     </>
   );
 };

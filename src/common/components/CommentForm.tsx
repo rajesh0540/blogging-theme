@@ -1,14 +1,10 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-// Components
-import Button from "../components/Button";
-
 export type CommentFormValues = {
   content: string;
   author_name: string;
   author_email: string;
-  author_url: string;
 };
 
 export type CommentSubmitHandler = (comment: CommentFormValues) => void;
@@ -43,7 +39,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
         <textarea
           {...register("content", { required: "Comment is required" })}
           className={`box-border block w-full px-4 py-2 border border-gray-300 rounded-sm  ${
-            errors.content ? "border-red-500" : ""
+            errors.content ? "border-red-500 outline-red-500 " : ""
           }`}
           id="content"
           placeholder="Something to say?"
@@ -93,36 +89,13 @@ const CommentForm: React.FC<CommentFormProps> = ({
           </span>
         )}
       </div>
-      <div className=" my-[25px]">
-        <label className="block mb-2 text-[16px] text-gray-700">
-          Website *
-        </label>
-        <input
-          {...register("author_url", { required: "Url is required" })}
-          className={`box-border block w-full px-4 py-2 border border-gray-300 rounded-sm  ${
-            errors.author_url ? "border-red-500 " : ""
-          }`}
-          id="author_url"
-          placeholder="https://www.example.com"
-        />
-        {errors.author_url && (
-          <span className="text-red-600 mb-1 text-[13px]">
-            {errors.author_url.message}
-          </span>
-        )}
-      </div>
-
-      {/* <Button variant="center" type="submit">
-        {" "}
-        {loading ? "Submitting Comment..." : "Submit"}
-      </Button> */}
 
       <button
         type="submit"
         className="px-4 py-1 text-white rounded-md bg-primary "
         disabled={loading}
       >
-        {loading ? "Submitting Comment..." : "Submit"}
+        {loading ? "Submitting..." : "Submit"}
       </button>
     </form>
   );

@@ -5,7 +5,6 @@ import joi from "joi";
 const commentSchema = joi.object().keys({
   author_name: joi.string().required(),
   author_email: joi.string().required().email(),
-  author_url: joi.string().required().uri(),
   content: joi.string().required(),
   postId: joi.number().required(),
 });
@@ -30,13 +29,11 @@ const handler: NextApiHandler = async (req, res) => {
         password: WORDPRESS_PASSWORD,
       });
 
-      const { postId, author_name, author_email, author_url, content } =
-        req.body;
+      const { postId, author_name, author_email, content } = req.body;
 
       await Wordpress.createComment(postId, token, {
         author_name,
         author_email,
-        author_url,
         content,
       });
 

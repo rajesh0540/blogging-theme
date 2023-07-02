@@ -1,14 +1,15 @@
 import React from "react";
 
-// Components
+//  Components
 
 type ImageProps = {
   src: string;
   classes?: string;
   imgClasses?: string;
+  alt?: string;
 };
 
-const Image: React.FC<ImageProps> = ({ src, classes, imgClasses }) => {
+const Image: React.FC<ImageProps> = ({ src, classes, imgClasses, alt }) => {
   return (
     <div
       className={`${
@@ -19,6 +20,7 @@ const Image: React.FC<ImageProps> = ({ src, classes, imgClasses }) => {
       <img
         src={src}
         className={`${imgClasses || ""} h-full w-full object-cover`}
+        alt={alt}
       />
     </div>
   );
