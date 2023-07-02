@@ -220,7 +220,7 @@ class Wordpress {
     return response.data;
   }
   static async getSiteData() {
-    const response = await axiosInstacne.get("/");
+    const response = await axiosInstacne.get("");
     const details = response.data;
 
     let site_icon = {

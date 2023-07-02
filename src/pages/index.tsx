@@ -30,8 +30,6 @@ const Home: NextPage<{
   const { name, description, site_icon } = layoutData.siteData;
   const { schema, canonical, og_url } = seo;
 
-  console.log("trendingPosts >>", trendingPosts);
-
   return (
     <>
       <SEOYoast
