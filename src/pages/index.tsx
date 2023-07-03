@@ -139,6 +139,7 @@ export const getStaticProps: GetStaticProps = async () => {
         trendingPosts,
         seo,
       },
+      revalidate: 1800,
     };
   } catch (e) {
     return {
