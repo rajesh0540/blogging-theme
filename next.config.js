@@ -12,7 +12,7 @@ const nextConfig = {
         destination: "/api/feed",
       },
       {
-        source: "/post/:slug/feed",
+        source: "/:slug/feed",
         destination: "/api/comment-feed",
       },
       {

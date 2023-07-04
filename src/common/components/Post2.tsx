@@ -41,14 +41,14 @@ const Post2: React.FC<PostProps> = ({
           : {})}
         loading={loading}
       />
-      <Link href={`/post/${slug}`} aria-label={`Read ${title.rendered}`}>
+      <Link href={`/${slug}`} aria-label={`Read ${title.rendered}`}>
         <div className="absolute bottom-0 left-0 w-full h-[600px] transition-all opacity-40 bg-gradient-black group-hover:opacity-60"></div>
       </Link>
       <div className="absolute bottom-0 left-0 right-0 p-5 pt-0">
         <div className="mb-2">
           <Category category={category} postedDate={date} variant="primary" />
         </div>
-        <Link href={`/post/${slug}`}>
+        <Link href={`/${slug}`}>
           <h2
             className="mb-3 text-4xl font-bold leading-8 lg:leading-[48px] lg:text-5xl pb-[6px] ellipsis-3"
             dangerouslySetInnerHTML={{ __html: title.rendered }}

@@ -76,7 +76,7 @@ export const sitemap_news = async () => {
   ${posts
     .map((post: any) => {
       return `<url>
-    <loc>${hostedUrl}/post/${post.slug}</loc>
+    <loc>${hostedUrl}/${post.slug}</loc>
     <news:news>
       <news:publication>
         <news:name>${name}</news:name>

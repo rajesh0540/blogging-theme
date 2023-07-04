@@ -21,7 +21,7 @@ const Post4: React.FC<Post4Props> = ({
   return (
     <article className="flex border-t border-gray-300">
       <figure className="w-[40%]">
-        <Link href={`/post/${slug}`} aria-label={`Read ${title.rendered}`}>
+        <Link href={`/${slug}`} aria-label={`Read ${title.rendered}`}>
           <PostImage
             containerClasses="h-[228px]"
             data={{
@@ -39,7 +39,7 @@ const Post4: React.FC<Post4Props> = ({
         <div className="mb-1">
           <Category category={category} postedDate={date} />
         </div>
-        <Link href={`/post/${slug}`}>
+        <Link href={`/${slug}`}>
           <h2
             className="mb-2 text-xl font-bold leading-7 lg:mb-4 lg:text-3xl ellipsis"
             dangerouslySetInnerHTML={{ __html: title.rendered }}

@@ -44,10 +44,7 @@ const Content: React.FC<ContentProps> = ({ post }) => {
       ></article>
       <div>
         <h3 className="mb-3 text-xl">Share on social media</h3>
-        <SocialIcons
-          title={title.rendered}
-          url={`${hostedUrl}/post/${post.slug}`}
-        />
+        <SocialIcons title={title.rendered} url={`${hostedUrl}/${post.slug}`} />
       </div>
     </section>
   );

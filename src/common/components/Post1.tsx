@@ -23,7 +23,7 @@ const Post1: React.FC<PostProps> = ({
   return (
     <article className="duration-300 group">
       <figure className="mb-3">
-        <Link href={`/post/${slug}`} aria-label={`Read ${title.rendered}`}>
+        <Link href={`/${slug}`} aria-label={`Read ${title.rendered}`}>
           <PostImage
             containerClasses="h-[160px]"
             data={{
@@ -49,7 +49,7 @@ const Post1: React.FC<PostProps> = ({
           </div>
         )}
         <div className="flex-1 ">
-          <Link href={`/post/${slug}`}>
+          <Link href={`/${slug}`}>
             <h2
               className="text-lg font-bold leading-5 h-[42px] ellipsis"
               dangerouslySetInnerHTML={{ __html: title.rendered }}

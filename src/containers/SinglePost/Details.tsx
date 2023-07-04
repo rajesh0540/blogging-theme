@@ -42,7 +42,7 @@ const Details: React.FC<DetailsProps> = ({ post }) => {
         <div>
           <SocialIcons
             title={title.rendered}
-            url={`${hostedUrl}/post/${post.slug}`}
+            url={`${hostedUrl}/${post.slug}`}
           />
         </div>
       </div>

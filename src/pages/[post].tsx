@@ -34,7 +34,7 @@ const SinglePost: NextPage<{
       {post.yoast_head_json && (
         <SEOYoast
           yoast_head_json={post.yoast_head_json}
-          pagePath={`/post/${post.slug}/`}
+          pagePath={`/${post.slug}/`}
         />
       )}
       <Wrapper size="small">
@@ -67,7 +67,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: posts.map((post: any) => {
       return {
         params: {
-          slug: post.slug,
+          post: post.slug,
         },
       };
     }),
@@ -76,7 +76,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.slug as string;
+  const slug = params?.post as string;
 
   try {
     const layoutData = await Wordpress.getLayoutData();

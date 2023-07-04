@@ -25,7 +25,7 @@ const Post3: React.FC<PostProps> = ({
   return (
     <article className="flex group">
       <figure className="mr-3">
-        <Link href={`/post/${slug}`} aria-label={`Read ${title.rendered}`}>
+        <Link href={`/${slug}`} aria-label={`Read ${title.rendered}`}>
           <PostImage
             containerClasses={`${imageClasses}`}
             data={{
@@ -48,7 +48,7 @@ const Post3: React.FC<PostProps> = ({
             postedDate={date}
           />
         </div>
-        <Link href={`/post/${slug}`}>
+        <Link href={`/${slug}`}>
           <h2
             className={`${headingClasses} ${
               dark ? "text-gray-300" : ""
