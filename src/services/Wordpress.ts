@@ -392,6 +392,17 @@ class Wordpress {
       og_url,
     };
   }
+
+  /**
+   * Page Endpoints
+   */
+  static async getPageBySlug(slug: string) {
+    const response = await axiosInstacne.get(`/wp/v2/pages?slug=${slug}`);
+
+    const post = response.data[0];
+
+    return post;
+  }
 }
 
 export default Wordpress;

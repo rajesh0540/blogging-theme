@@ -1,10 +1,12 @@
 import React from "react";
 
-interface WrapperProps {
+export type WrapperSize = "extra-small" | "small" | "medium";
+
+type WrapperProps = {
   children: React.ReactNode;
-  size?: "small" | "medium";
+  size?: WrapperSize;
   className?: string;
-}
+};
 
 const Wrapper: React.FC<WrapperProps> = ({
   children,
@@ -12,6 +14,7 @@ const Wrapper: React.FC<WrapperProps> = ({
   className,
 }) => {
   const sizeClasses = {
+    "extra-small": "max-w-[720px]",
     small: "max-w-[1080px]",
     medium: "max-w-[1320px]",
   };
