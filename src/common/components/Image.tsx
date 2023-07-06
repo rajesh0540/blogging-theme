@@ -1,6 +1,6 @@
 import React from "react";
 
-//  Components
+// Components
 
 type ImageProps = {
   src: string;
