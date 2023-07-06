@@ -35,7 +35,10 @@ const Footer: React.FC<FooterProps> = ({ siteData, footerMenu }) => {
               <ul className="flex justify-center gap-5">
                 {footerMenu.map((menuItem: any) => {
                   return (
-                    <li className="text-gray-500 hover:underline">
+                    <li
+                      className="text-gray-500 hover:underline"
+                      key={menuItem.id}
+                    >
                       <Link href={menuItem.url}>{menuItem.title}</Link>
                     </li>
                   );

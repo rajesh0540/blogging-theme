@@ -31,8 +31,6 @@ const SinglePost: NextPage<{
   const { site_icon } = layoutData.siteData;
   post.yoast_head_json.favIcon = site_icon.src;
 
-  console.log("post >>", post);
-
   return (
     <>
       {post.yoast_head_json && (
