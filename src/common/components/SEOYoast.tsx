@@ -72,6 +72,14 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
       {author && <meta name="author" content={author} />}
 
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={pageUrl} />
+      {og_title && <meta name="twitter:title" content={og_title} />}
+      {og_description && (
+        <meta name="twitter:description" content={og_description} />
+      )}
+      {og_image?.[0]?.url && (
+        <meta name="twitter:image" content={og_image[0].url} />
+      )}
       {twitter_misc
         ? Object.keys(twitter_misc).map((key, i) => (
             <>
