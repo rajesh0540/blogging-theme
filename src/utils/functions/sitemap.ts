@@ -15,6 +15,10 @@ export const sitemap_index = async () => {
       lastModified: "",
     },
     {
+      fileName: "page-sitemap.xml",
+      lastModified: "",
+    },
+    {
       fileName: "category-sitemap.xml",
       lastModified: "",
     },
@@ -25,6 +29,9 @@ export const sitemap_index = async () => {
     {
       fileName: "author-sitemap.xml",
       lastModified: "",
+    },
+    {
+      fileName: "web-story-sitemap.xml",
     },
   ];
 
@@ -91,7 +98,7 @@ export const sitemap_news = async () => {
 </urlset>`;
 };
 
-export const sitemap = async (fileName: string) => {
+export const sitemap = async (fileName: string, locationPrefix = "") => {
   const sitemapString = await Wordpress.getSitemap(fileName);
 
   const document = htmlparser2.parseDocument(sitemapString, {
@@ -109,13 +116,14 @@ export const sitemap = async (fileName: string) => {
 
     const loc = child.children.find((child: any) => child.name === "loc")
       .firstChild.data;
-    const lastmod = child.children.find(
-      (child: any) => child.name === "lastmod"
-    ).firstChild.data;
+
+    const lastmod =
+      child.children.find((child: any) => child.name === "lastmod")?.firstChild
+        ?.data || "";
 
     urls.push({
       loc: loc
-        .replace(wpUrl, hostedUrl)
+        .replace(wpUrl, hostedUrl + locationPrefix)
         .replace("/post/category", "/category")
         .replace("/post/tag", "/tag")
         .replace("/post/author", "/author"),
@@ -129,7 +137,8 @@ export const sitemap = async (fileName: string) => {
     .map(
       (url) => `<url>
     <loc>${url.loc}</loc>
-    <lastmod>${url.lastmod}</lastmod>
+    ${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : ""}
+    
   </url>`
     )
     .join("\n  ")}

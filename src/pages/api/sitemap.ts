@@ -10,7 +10,13 @@ const handler: NextApiHandler = async (req, res) => {
     res.send("");
   }
 
-  const sitemap = await _sitemap(fileName);
+  let locationPrefix = "";
+
+  if (fileName === "page-sitemap.xml") {
+    locationPrefix = "/page";
+  }
+
+  const sitemap = await _sitemap(fileName, locationPrefix);
 
   return res.send(sitemap);
 };
