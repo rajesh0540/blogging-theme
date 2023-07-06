@@ -31,13 +31,21 @@ const Details: React.FC<DetailsProps> = ({ post }) => {
         dangerouslySetInnerHTML={{ __html: title.rendered }}
       ></h1>
       <div className="flex justify-between">
-        <div>
-          <Link href={`/author/${author.slug}`}>
-            <span className="block font-medium text-gray-500 uppercase ">
-              {author.name}
-            </span>
-          </Link>
-          <span className="text-gray-500">{getHumanReadableTime(date)}</span>
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-16 overflow-hidden border rounded-full border-slate-100">
+            <img
+              className="object-cover w-full h-full"
+              src={author.avatar_urls[96]}
+            />
+          </div>
+          <div>
+            <Link href={`/author/${author.slug}`}>
+              <span className="block font-medium text-gray-500 uppercase ">
+                {author.name}
+              </span>
+            </Link>
+            <span className="text-gray-500">{getHumanReadableTime(date)}</span>
+          </div>
         </div>
         <div>
           <SocialIcons
