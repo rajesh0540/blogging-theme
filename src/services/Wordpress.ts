@@ -4,8 +4,15 @@ import axios from "axios";
 import { CommentFormValues } from "@/common/components/CommentForm";
 import type { OptimizeImage } from "@/utils/functions/optimizeImage";
 
+const wordpressJsonUrl = process.env.WORDPRESS_JSON_URL || "";
+const wordpressUsername = process.env.WORDRESS_USERNAME || "";
+const wordpressPassword = process.env.WORDPRESS_PASSWORD || "";
+const headerMenuId = Number(process.env.HEADER_MENU_ID);
+const footerMenuId = Number(process.env.FOOTER_MENU_ID);
+const wordpressUrl = process.env.WORDPRESS_URL;
+
 const axiosInstacne = axios.create({
-  baseURL: process.env.WORDPRESS_JSON_URL,
+  baseURL: wordpressJsonUrl,
   headers: {
     "Content-Type": "application/json",
     Accept: "*/*",
@@ -21,9 +28,24 @@ class Wordpress {
       return globalAny.layoutCache;
     }
 
+    const login = await this.login({
+      username: wordpressUsername,
+      password: wordpressPassword,
+    });
+
     const siteData = await this.getSiteData();
     const categories = await this.getAllCategories(99);
     const webStories = await this.getAllWebStories();
+
+    let headerMenu = [];
+    if (headerMenuId) {
+      headerMenu = await this.getMenu(headerMenuId, login.token);
+    }
+
+    let footerMenu = [];
+    if (footerMenuId) {
+      footerMenu = await this.getMenu(footerMenuId, login.token);
+    }
 
     const layoutData = {
       siteData,
@@ -44,6 +66,8 @@ class Wordpress {
           slug: story.slug,
         };
       }),
+      headerMenu,
+      footerMenu,
     };
 
     globalAny.layoutCache = layoutData;
@@ -402,6 +426,64 @@ class Wordpress {
     const post = response.data[0];
 
     return post;
+  }
+
+  /**
+   * Menu Endpoints
+   */
+  static async getMenu(menuId: number, token: string) {
+    const response = await axiosInstacne.get(
+      `/wp/v2/menu-items?menus=${menuId}&per_page=99`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "*/*",
+        },
+      }
+    );
+
+    const menuItems = response.data.map((item: any) => {
+      const wpPath = item.url.replace(wordpressUrl, "");
+
+      let path = "/";
+
+      if (item.object === "page") {
+        const [_, slug] = wpPath.split("/");
+
+        path = `/page/${slug}`;
+      } else if (item.object === "custom") {
+        path = wpPath;
+      } else if (item.object === "category") {
+        const [_, _2, _3, slug] = wpPath.split("/");
+
+        path = `/category/${slug}`;
+      } else if (item.object === "post") {
+        const [_, _2, slug] = wpPath.split("/");
+
+        path = `/${slug}`;
+      }
+
+      return {
+        id: item.id,
+        title: item.title.rendered,
+        menu_order: item.menu_order,
+        parent: item.parent,
+        url: path,
+      };
+    });
+
+    for (const item of menuItems) {
+      item.children = [];
+
+      menuItems.forEach((child: any) => {
+        if (child.parent === item.id) {
+          item.children.push(child);
+        }
+      });
+    }
+
+    return menuItems;
   }
 }
 

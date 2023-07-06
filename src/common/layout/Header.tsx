@@ -7,15 +7,16 @@ import Wrapper from "../components/Wrapper";
 import Button from "../components/Button";
 
 //
-import { Search } from "../components/Icon";
+import { Search, DownAngle, RightAngle } from "../components/Icon";
 
 type HeaderProps = {
   siteData: any;
-  categories: any[];
+  headerMenu: any[];
 };
 
-const Header: React.FC<HeaderProps> = ({ siteData, categories = [] }) => {
+const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
   const [query, setQuery] = useState("");
+  const [openId, setOpenId] = useState<null | number>(null);
   const router = useRouter();
 
   const onSearchHandler: React.FormEventHandler = (e) => {
@@ -33,6 +34,16 @@ const Header: React.FC<HeaderProps> = ({ siteData, categories = [] }) => {
         { shallow: true }
       );
     }
+  };
+
+  const toggleMenu = (id: number) => {
+    setOpenId((prev) => {
+      if (prev === id) {
+        return null;
+      } else {
+        return id;
+      }
+    });
   };
 
   return (
@@ -80,32 +91,87 @@ const Header: React.FC<HeaderProps> = ({ siteData, categories = [] }) => {
           </div>
         </Wrapper>
         <div className="border-b"></div>
-        <Wrapper>
-          <div className="relative h-12 overflow-x-auto">
-            <div className="absolute top-0 left-0 w-auto min-w-full">
-              <ul className="flex items-center justify-center h-12 gap-4">
-                {categories.map((category: any, i) => {
-                  const isLast = i === categories.length - 1;
+        {headerMenu.length > 0 && (
+          <Wrapper>
+            <div className="relative h-12 overflow-x-auto lg:overflow-x-visible">
+              <div className="absolute top-0 left-0 w-auto min-w-full">
+                <ul className="flex items-center justify-center h-12 gap-4">
+                  {headerMenu.map((menuItem: any, i) => {
+                    const isLast = i === headerMenu.length - 1;
 
-                  return (
-                    <React.Fragment key={category.id}>
-                      <li className="flex items-center text-sm font-semibold uppercase oswald">
-                        <Link href={`/category/${category.slug}`}>
-                          {category.name}
-                        </Link>
-                        {!isLast && (
-                          <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>
-                        )}
-                      </li>
-                    </React.Fragment>
-                  );
-                })}
-              </ul>
+                    if (menuItem.parent) {
+                      return null;
+                    }
+
+                    return (
+                      <MenuItem
+                        key={menuItem.id}
+                        menuItem={menuItem}
+                        toggleMenu={toggleMenu}
+                        openId={openId}
+                        isLast={isLast}
+                      />
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
-          </div>
-        </Wrapper>
+          </Wrapper>
+        )}
       </header>
     </>
+  );
+};
+
+type MenuItemProps = {
+  menuItem: any;
+  isLast: boolean;
+  openId: number | null;
+  toggleMenu: (id: number) => void;
+};
+const MenuItem: React.FC<MenuItemProps> = ({
+  menuItem,
+  isLast,
+  openId,
+  toggleMenu,
+}) => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const hasChildren = menuItem.children.length > 0;
+
+  return (
+    <li className="relative flex items-center text-sm font-semibold uppercase oswald">
+      <Link href={menuItem.url}>{menuItem.title}</Link>
+      {hasChildren && (
+        <button
+          className="flex items-center justify-center w-3 h-3 ml-1"
+          onClick={() => toggleMenu(menuItem.id)}
+        >
+          {openId === menuItem.id ? (
+            <RightAngle size={20} />
+          ) : (
+            <DownAngle size={20} />
+          )}
+        </button>
+      )}
+      {!isLast && <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>}
+      {hasChildren && openId === menuItem.id && (
+        <div className="absolute z-10 py-1 bg-white border shadow-sm lg:w-52 top-8 border-slate-100">
+          <ul>
+            {menuItem.children.map((child: any) => (
+              <li>
+                <Link
+                  className="px-3 py-[6px] block hover:bg-slate-100"
+                  href={child.url}
+                >
+                  {child.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </li>
   );
 };
 

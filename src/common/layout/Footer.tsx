@@ -7,9 +7,10 @@ import Wrapper from "../components/Wrapper";
 
 type FooterProps = {
   siteData?: any;
+  footerMenu: any[];
 };
 
-const Footer: React.FC<FooterProps> = ({ siteData }) => {
+const Footer: React.FC<FooterProps> = ({ siteData, footerMenu }) => {
   const year = useMemo(() => {
     return new Date().getFullYear();
   }, []);
