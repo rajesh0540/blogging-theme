@@ -19,6 +19,8 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
   const [openId, setOpenId] = useState<null | number>(null);
   const router = useRouter();
 
+  const baseMenu = headerMenu.filter((menuItem: any) => !!!menuItem.parent);
+
   const onSearchHandler: React.FormEventHandler = (e) => {
     e.preventDefault();
 
@@ -93,15 +95,11 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
         <div className="border-b"></div>
         {headerMenu.length > 0 && (
           <Wrapper>
-            <div className="relative h-12 overflow-x-auto lg:overflow-x-visible">
+            <div className="relative h-12">
               <div className="absolute top-0 left-0 w-auto min-w-full">
                 <ul className="flex items-center justify-center h-12 gap-4">
-                  {headerMenu.map((menuItem: any, i) => {
-                    const isLast = i === headerMenu.length - 1;
-
-                    if (menuItem.parent) {
-                      return null;
-                    }
+                  {baseMenu.map((menuItem: any, i) => {
+                    const isLast = i === baseMenu.length - 1;
 
                     return (
                       <MenuItem
@@ -135,13 +133,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
   openId,
   toggleMenu,
 }) => {
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
   const hasChildren = menuItem.children.length > 0;
 
   return (
-    <li className="relative flex items-center text-sm font-semibold uppercase oswald">
+    <li className="flex items-center text-sm font-semibold uppercase lg:relative oswald">
       <Link href={menuItem.url}>{menuItem.title}</Link>
+
       {hasChildren && (
         <button
           className="flex items-center justify-center w-3 h-3 ml-1"
@@ -156,7 +153,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
       )}
       {!isLast && <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>}
       {hasChildren && openId === menuItem.id && (
-        <div className="absolute z-10 py-1 bg-white border shadow-sm lg:w-52 top-8 border-slate-100">
+        <div className="absolute left-0 right-0 z-10 py-1 bg-white border shadow-sm lg:w-52 lg:top-8 top-11 border-slate-100">
           <ul>
             {menuItem.children.map((child: any) => (
               <li>
