@@ -30,9 +30,6 @@ const Home: NextPage<{
   const { name, description, site_icon } = layoutData.siteData;
   const { schema, canonical, og_url } = seo;
 
-  console.log("aaaa headerMenu >>", layoutData.headerMenu);
-  console.log("aaaa footerMenu >>", layoutData.footerMenu);
-
   return (
     <>
       <SEOYoast

@@ -19,15 +19,19 @@ import Wordpress from "@/services/Wordpress";
 import optimizeImage from "@/utils/functions/optimizeImage";
 
 const resultsPerPage = 4;
+const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
 
 const SinglePost: NextPage<{
   layoutData: any;
   post: any;
   relatedPosts: any[];
   latestPosts: any[];
-}> = ({ layoutData, post, relatedPosts, latestPosts }) => {
+  trendingPosts: any[];
+}> = ({ layoutData, post, relatedPosts, latestPosts, trendingPosts }) => {
   const { site_icon } = layoutData.siteData;
   post.yoast_head_json.favIcon = site_icon.src;
+
+  console.log("post >>", post);
 
   return (
     <>
@@ -46,7 +50,7 @@ const SinglePost: NextPage<{
             <Comment post={post} />
           </div>
           <div className="lg:col-span-1">
-            <Sidebar latestPosts={latestPosts} popularPosts={[]} />
+            <Sidebar latestPosts={latestPosts} popularPosts={trendingPosts} />
           </div>
         </div>
       </Wrapper>
@@ -86,6 +90,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       throw new Error("Post not found");
     }
 
+    const tags = await Wordpress.getAllTags(99);
+    post.tags = post.tags.map((tag: any) => {
+      tag = tags.find((t: any) => t.id === tag);
+
+      return {
+        name: tag.name,
+        slug: tag.slug,
+      };
+    });
+
     await Wordpress.populatePostsImages([post], optimizeImage);
 
     post.author = await Wordpress.getAuthorById(post.author);
@@ -120,12 +134,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     let latestPosts = await Wordpress.getAllPosts(resultsPerPage);
     await Wordpress.populatePostsImages(latestPosts, optimizeImage);
 
+    let trendingPosts = [];
+    if (trendingCategoryId) {
+      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 5);
+      await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
+    }
+
     return {
       props: {
         layoutData,
         post,
         relatedPosts,
         latestPosts,
+        trendingPosts,
       },
       revalidate: 1800,
     };

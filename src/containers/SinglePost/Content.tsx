@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
 
 // Components
@@ -11,7 +12,7 @@ type ContentProps = {
 const hostedUrl = process.env.HOSTED_URL || "";
 
 const Content: React.FC<ContentProps> = ({ post }) => {
-  const { title, content, featured_media } = post;
+  const { title, content, featured_media, tags } = post;
 
   return (
     <section className="mb-8">
@@ -42,6 +43,18 @@ const Content: React.FC<ContentProps> = ({ post }) => {
         className="mb-8 richText"
         dangerouslySetInnerHTML={{ __html: content.rendered }}
       ></article>
+      <div className="flex mb-8 text-sm font-medium uppercase">
+        <span className="mr-3 text-gray-800">Related Topics:</span>
+        <ul className="flex gap-2">
+          {tags.map((tag: any) => (
+            <li>
+              <Link className="text-gray-600" href={`/tag/${tag.slug}`}>
+                #{tag.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div>
         <h3 className="mb-3 text-xl">Share on social media</h3>
         <SocialIcons title={title.rendered} url={`${hostedUrl}/${post.slug}`} />
