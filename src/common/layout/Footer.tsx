@@ -30,6 +30,20 @@ const Footer: React.FC<FooterProps> = ({ siteData, footerMenu }) => {
             </div>
           )}
 
+          {footerMenu.length > 0 && (
+            <nav className="mb-[32px]">
+              <ul className="flex justify-center gap-5">
+                {footerMenu.map((menuItem: any) => {
+                  return (
+                    <li className="text-gray-500 hover:underline">
+                      <Link href={menuItem.url}>{menuItem.title}</Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )}
+
           {/* copyright content */}
           <div className="text-gray-500">
             Copyright &copy; {year} {siteData?.name}. All rights reserved.
