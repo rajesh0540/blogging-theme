@@ -18,14 +18,23 @@ import optimizeImage from "@/utils/functions/optimizeImage";
 
 let resultsPerPage = 9;
 const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
+const featuredCategoryId = Number(process.env.FEATURED_CATEGORY_ID);
 
 const Home: NextPage<{
   layoutData: any;
   posts: any[];
   categoriesWithPosts: any[];
+  featuredPosts: any[];
   trendingPosts: any[];
   seo: any;
-}> = ({ layoutData, posts, categoriesWithPosts, trendingPosts, seo }) => {
+}> = ({
+  layoutData,
+  posts = [],
+  categoriesWithPosts,
+  featuredPosts = [],
+  trendingPosts = [],
+  seo,
+}) => {
   const webStories = layoutData.webStories;
   const { name, description, site_icon } = layoutData.siteData;
   const { schema, canonical, og_url } = seo;
@@ -50,7 +59,11 @@ const Home: NextPage<{
       />
       {webStories?.length > 0 && <WebStories webStories={webStories} />}
 
-      <Trending trendingPosts={trendingPosts} posts={posts} />
+      <Trending
+        trendingPosts={trendingPosts}
+        featuredPosts={featuredPosts}
+        posts={posts}
+      />
       {categoriesWithPosts.map((category, i) => {
         let arrangement: CategoryPostsArrangements = "one";
 
@@ -104,6 +117,12 @@ export const getStaticProps: GetStaticProps = async () => {
       await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
     }
 
+    let featuredPosts = [];
+    if (featuredCategoryId) {
+      featuredPosts = await Wordpress.getCategoryPosts([featuredCategoryId], 5);
+      await Wordpress.populatePostsImages(featuredPosts, optimizeImage);
+    }
+
     posts.forEach((post: any) => {
       const categoryId = post.categories[0];
 
@@ -136,6 +155,7 @@ export const getStaticProps: GetStaticProps = async () => {
         layoutData,
         posts,
         categoriesWithPosts,
+        featuredPosts,
         trendingPosts,
         seo,
       },

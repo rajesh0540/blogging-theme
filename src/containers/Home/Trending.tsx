@@ -9,13 +9,15 @@ import Divider from "@/common/components/Divider";
 
 interface TrendingProps {
   trendingPosts: any[];
+  featuredPosts: any[];
   posts: any[];
 }
 
-const Trending: React.FC<TrendingProps> = ({ trendingPosts, posts }) => {
-  const featuredPosts = posts.slice(0, 3);
-  const remainingPosts = posts.slice(3);
-
+const Trending: React.FC<TrendingProps> = ({
+  trendingPosts,
+  featuredPosts,
+  posts,
+}) => {
   return (
     <section>
       <Wrapper>
@@ -52,9 +54,10 @@ const Trending: React.FC<TrendingProps> = ({ trendingPosts, posts }) => {
               })}
             </div>
           )}
-          {remainingPosts.length > 0 && (
+          {posts.length > 0 && (
             <div className="flex flex-col order-3 gap-4 lg:order-3 md:col-span-2">
-              {remainingPosts.map((post) => (
+              <Divider>Latest</Divider>
+              {posts.map((post) => (
                 <Post3 key={post.id} post={post} loading="eager" />
               ))}
             </div>
