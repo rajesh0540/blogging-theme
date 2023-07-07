@@ -30,7 +30,7 @@ const Details: React.FC<DetailsProps> = ({ post }) => {
         className="mb-6 text-5xl font-bold"
         dangerouslySetInnerHTML={{ __html: title.rendered }}
       ></h1>
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-3 lg:gap-0 lg:flex-row lg:justify-between lg:items-center">
         <div className="flex items-center gap-2">
           <Link href={`/author/${author.slug}`} aria-label={author.name}>
             <div className="w-16 h-16 overflow-hidden border rounded-full border-slate-100">
