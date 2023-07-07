@@ -5,11 +5,18 @@ import Layout from "@/common/layout";
 export default function App({ Component, pageProps }: AppProps) {
   const { layoutData } = pageProps || {};
 
+  // @ts-ignore
+  const showLayout = Component.layout ?? true;
+
   return (
     <>
-      <Layout layoutData={layoutData}>
+      {showLayout ? (
+        <Layout layoutData={layoutData}>
+          <Component {...pageProps} />
+        </Layout>
+      ) : (
         <Component {...pageProps} />
-      </Layout>
+      )}
     </>
   );
 }

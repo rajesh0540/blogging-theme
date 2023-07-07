@@ -63,6 +63,7 @@ class Wordpress {
         }),
       webStories: webStories.map((story: any) => {
         return {
+          poster: story.story_poster || null,
           slug: story.slug,
         };
       }),
