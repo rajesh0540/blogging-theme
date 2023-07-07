@@ -10,6 +10,7 @@ import Listing from "@/containers/WebStoryListing/Listing";
 
 //
 import Wordpress from "@/services/Wordpress";
+import optimizeImage from "@/utils/functions/optimizeImage";
 
 const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
   const { name, description, site_icon } = layoutData.siteData;
@@ -39,6 +40,15 @@ const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const layoutData = await Wordpress.getLayoutData();
+
+    for (const story of layoutData.webStories) {
+      const posterUrl = story.poster?.url;
+
+      if (posterUrl) {
+        const { placeholder } = await optimizeImage({ src: posterUrl });
+        story.poster.placeholder = placeholder;
+      }
+    }
 
     return {
       props: {

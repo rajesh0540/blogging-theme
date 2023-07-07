@@ -28,6 +28,8 @@ const WebStoriesComponent: React.FC<WebStoriesProps> = ({ webStories }) => {
                       src={story.poster.url}
                       height={(story.poster.height / story.poster.width) * 64}
                       width={64}
+                      blurDataURL={story.poster.placeholder}
+                      placeholder={"blur"}
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-400"></div>

@@ -114,6 +114,15 @@ export const getStaticProps: GetStaticProps = async () => {
       });
     }
 
+    for (const story of layoutData.webStories) {
+      const posterUrl = story.poster?.url;
+
+      if (posterUrl) {
+        const { placeholder } = await optimizeImage({ src: posterUrl });
+        story.poster.placeholder = placeholder;
+      }
+    }
+
     let trendingPosts = [];
     if (trendingCategoryId) {
       trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 5);

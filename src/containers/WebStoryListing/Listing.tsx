@@ -26,6 +26,8 @@ const Listing: React.FC<ListingProps> = ({ webStories }) => {
                     alt={`Story ${story.slug}`}
                     height={(story.poster.height / story.poster.width) * 192}
                     width={192}
+                    blurDataURL={story.poster.placeholder}
+                    placeholder="blur"
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-300"></div>
