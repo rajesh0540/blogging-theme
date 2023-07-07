@@ -4,10 +4,10 @@ import React from "react";
 import Wrapper from "@/common/components/Wrapper";
 import Link from "next/link";
 
-type PageListingProps = {
+type ListingProps = {
   pages: any[];
 };
-const PageListing: React.FC<PageListingProps> = ({ pages }) => {
+const Listing: React.FC<ListingProps> = ({ pages }) => {
   return (
     <section>
       <Wrapper>
@@ -30,4 +30,4 @@ const PageListing: React.FC<PageListingProps> = ({ pages }) => {
   );
 };
 
-export default PageListing;
+export default Listing;

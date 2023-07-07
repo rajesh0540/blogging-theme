@@ -6,34 +6,32 @@ import SEOYoast from "@/common/components/SEOYoast";
 
 // Containers
 import Title from "@/common/containers/Title";
-import Listing from "@/containers/PageListing/Listing";
+import Listing from "@/containers/WebStoryListing/Listing";
 
 //
 import Wordpress from "@/services/Wordpress";
 
-const PageListing: NextPage<{ layoutData: any; pages: any[] }> = ({
-  layoutData,
-  pages,
-}) => {
+const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
   const { name, description, site_icon } = layoutData.siteData;
+  const { webStories } = layoutData;
 
   return (
     <>
       <SEOYoast
         yoast_head_json={{
-          title: `Pages - ${name}`,
+          title: `Web Stories - ${name}`,
           description,
           favIcon: site_icon.src,
           og_locale: "en_US",
           og_type: "website",
-          og_title: `Pages - ${name}`,
+          og_title: `Web Stories - ${name}`,
           og_description: description,
           og_site_name: name,
         }}
-        pagePath="/page"
+        pagePath="/web-stories"
       />
-      <Title name="Pages" />
-      <Listing pages={pages} />
+      <Title name="Web Stories" />
+      <Listing webStories={webStories} />
     </>
   );
 };
@@ -41,12 +39,10 @@ const PageListing: NextPage<{ layoutData: any; pages: any[] }> = ({
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const layoutData = await Wordpress.getLayoutData();
-    const pages = await Wordpress.getAllPages();
 
     return {
       props: {
         layoutData,
-        pages,
       },
     };
   } catch (e) {
@@ -56,4 +52,4 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 };
 
-export default PageListing;
+export default WebStoryListing;
