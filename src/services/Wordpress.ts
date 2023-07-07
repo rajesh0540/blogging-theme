@@ -421,6 +421,13 @@ class Wordpress {
   /**
    * Page Endpoints
    */
+  static async getAllPages() {
+    const response = await axiosInstacne.get(`/wp/v2/pages`);
+
+    const post = response.data;
+
+    return post;
+  }
   static async getPageBySlug(slug: string) {
     const response = await axiosInstacne.get(`/wp/v2/pages?slug=${slug}`);
 

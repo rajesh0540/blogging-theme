@@ -99,6 +99,9 @@ export const getStaticProps: GetStaticProps = async () => {
     const categoriesWithPosts = [];
     for (const category of layoutData.categories) {
       if (categoriesWithPosts.length === 4) break;
+      if ([trendingCategoryId, featuredCategoryId].includes(category.id)) {
+        continue;
+      }
 
       const categoryPosts = await Wordpress.getCategoryPosts([category.id]);
       await Wordpress.populatePostsImages(categoryPosts, optimizeImage);
