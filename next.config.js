@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [process.env.WORDPRESS_URL_DOMAIN],
+    domains: ["secure.gravatar.com", process.env.WORDPRESS_URL_DOMAIN],
   },
   async rewrites() {
     return [

@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 // Components
-import Wrapper from "@/common/components/Wrapper";
 import SocialIcons from "@/common/components/SocialIcons";
 
 //
@@ -32,12 +32,18 @@ const Details: React.FC<DetailsProps> = ({ post }) => {
       ></h1>
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-16 h-16 overflow-hidden border rounded-full border-slate-100">
-            <img
-              className="object-cover w-full h-full"
-              src={author.avatar_urls[96]}
-            />
-          </div>
+          <Link href={`/author/${author.slug}`} aria-label={author.name}>
+            <div className="w-16 h-16 overflow-hidden border rounded-full border-slate-100">
+              <NextImage
+                className="object-cover w-full h-full"
+                src={author.avatar_urls[96]}
+                alt={author.name}
+                height={62}
+                width={62}
+              />
+            </div>
+          </Link>
+
           <div>
             <Link href={`/author/${author.slug}`}>
               <span className="block font-medium text-gray-500 uppercase ">
