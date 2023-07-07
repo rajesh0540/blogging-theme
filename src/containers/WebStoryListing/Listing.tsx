@@ -31,7 +31,10 @@ const Listing: React.FC<ListingProps> = ({ webStories }) => {
                   <div className="w-full h-full bg-gray-300"></div>
                 )}
               </div>
-              <Link href={`/web-stories/${story.slug}`}>
+              <Link
+                href={`/web-stories/${story.slug}`}
+                aria-label={`Story ${story.slug}`}
+              >
                 <div className="absolute top-0 left-0 w-full h-full bg-gray-600 bg-opacity-0 hover:bg-opacity-25"></div>
               </Link>
             </li>
