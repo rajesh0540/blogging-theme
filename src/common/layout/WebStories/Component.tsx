@@ -33,7 +33,10 @@ const WebStoriesComponent: React.FC<WebStoriesProps> = ({ webStories }) => {
                     <div className="w-full h-full bg-gray-400"></div>
                   )}
                 </div>
-                <Link href={`/web-stories/${story.slug}`}>
+                <Link
+                  href={`/web-stories/${story.slug}`}
+                  aria-label={`Story ${story.slug}`}
+                >
                   <div className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-0 cursor-pointer hover:opacity-30"></div>
                 </Link>
               </li>

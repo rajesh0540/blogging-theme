@@ -141,6 +141,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
       {hasChildren && (
         <button
+          aria-label="Toggle Button"
           className="flex items-center justify-center w-3 h-3 ml-1"
           onClick={() => toggleMenu(menuItem.id)}
         >
