@@ -14,7 +14,10 @@ const Listing: React.FC<ListingProps> = ({ webStories }) => {
       <Wrapper>
         <ul className="flex flex-wrap gap-5">
           {webStories.map((story) => (
-            <li className="relative p-2 overflow-hidden border-2 border-gray-500 rounded-full w-36 h-36 lg:w-48 lg:h-48">
+            <li
+              key={story.id}
+              className="relative p-2 overflow-hidden border-2 border-gray-500 rounded-full w-36 h-36 lg:w-48 lg:h-48"
+            >
               <div className="w-full h-full overflow-hidden rounded-full">
                 {story.poster ? (
                   <NextImage
