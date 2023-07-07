@@ -41,6 +41,7 @@ const CategoryPosts: React.FC<CategoryPostsProps> = ({
               >
                 {featuredPosts.map((post: any) => (
                   <Post2
+                    key={post.id}
                     classes="h-[600px]"
                     imageHeight={600}
                     imageWidth={554}
@@ -56,7 +57,7 @@ const CategoryPosts: React.FC<CategoryPostsProps> = ({
                 }`}
               >
                 {columnPosts.map((post: any) => (
-                  <Post1 post={post} imageWidth={363} />
+                  <Post1 key={post.id} post={post} imageWidth={363} />
                 ))}
               </div>
             )}
@@ -79,6 +80,7 @@ const CategoryPosts: React.FC<CategoryPostsProps> = ({
               <div className=" lg:col-span-3">
                 {featuredPosts.map((post) => (
                   <Post2
+                    key={post.id}
                     post={post}
                     classes="h-[600px]"
                     imageHeight={600}

@@ -10,8 +10,6 @@ export type WebStoriesProps = {
 };
 
 const WebStoriesComponent: React.FC<WebStoriesProps> = ({ webStories }) => {
-  console.log("webStories >>", webStories);
-
   return (
     <>
       <div className="mb-5">
