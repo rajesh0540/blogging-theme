@@ -10,12 +10,7 @@ type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children, layoutData }) => {
-  const {
-    categories = [],
-    siteData = {},
-    headerMenu = [],
-    footerMenu = [],
-  } = layoutData || {};
+  const { siteData = {}, headerMenu = [], footerMenu = [] } = layoutData || {};
 
   return (
     <>

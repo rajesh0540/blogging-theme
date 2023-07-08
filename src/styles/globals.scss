@@ -41,3 +41,10 @@ h6,
 .oswald {
   font-family: "Oswald", Arial, Helvetica, sans-serif;
 }
+
+@media (max-width: 1023px) {
+  .dropdown-position {
+    left: 0px !important;
+    right: 0px !important;
+  }
+}

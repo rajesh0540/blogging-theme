@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -17,6 +18,9 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<null | number>(null);
+  const [left, setLeft] = useState<number>(0);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
   const router = useRouter();
 
   const baseMenu = headerMenu.filter((menuItem: any) => !!!menuItem.parent);
@@ -46,7 +50,21 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
         return id;
       }
     });
+
+    const { x: menuX } = menuRef.current!.getBoundingClientRect();
+
+    const menuItem = document.getElementById(`menu-item-${id}`)!;
+    const { x } = menuItem.getBoundingClientRect();
+
+    const offset = -8;
+
+    setLeft(x - menuX + offset);
   };
+
+  useEffect(() => {
+    setOpenId(null);
+    setLeft(0);
+  }, [router.asPath]);
 
   return (
     <>
@@ -93,27 +111,54 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
           </div>
         </Wrapper>
         <div className="border-b"></div>
-        {headerMenu.length > 0 && (
+        {baseMenu.length > 0 && (
           <Wrapper>
-            <div className="relative h-12">
-              <div className="absolute top-0 left-0 w-auto min-w-full">
+            <div
+              className="relative h-12 mx-auto overflow-x-auto"
+              ref={menuRef}
+            >
+              <div className="absolute top-0 left-0 min-w-full">
                 <ul className="flex items-center justify-center h-12 gap-4">
                   {baseMenu.map((menuItem: any, i) => {
                     const isLast = i === baseMenu.length - 1;
+                    const hasChildren = menuItem.children.length > 0;
 
                     return (
-                      <MenuItem
+                      <li
                         key={menuItem.id}
-                        menuItem={menuItem}
-                        toggleMenu={toggleMenu}
-                        openId={openId}
-                        isLast={isLast}
-                      />
+                        id={`menu-item-${menuItem.id}`}
+                        className="flex items-center text-sm font-semibold uppercase lg:relative oswald"
+                      >
+                        <Link href={menuItem.url}>{menuItem.title}</Link>
+
+                        {hasChildren && (
+                          <button
+                            aria-label="Toggle Button"
+                            className="flex items-center justify-center w-3 h-3 ml-1"
+                            onClick={(e) => toggleMenu(menuItem.id)}
+                          >
+                            {openId === menuItem.id ? (
+                              <RightAngle size={20} />
+                            ) : (
+                              <DownAngle size={20} />
+                            )}
+                          </button>
+                        )}
+
+                        {!isLast && (
+                          <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>
+                        )}
+
+                        {hasChildren && openId === menuItem.id && (
+                          <Dropdown menu={menuItem.children} left={left} />
+                        )}
+                      </li>
                     );
                   })}
                 </ul>
               </div>
             </div>
+            <div className="relative" id="header-dropdown"></div>
           </Wrapper>
         )}
       </header>
@@ -121,55 +166,38 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
   );
 };
 
-type MenuItemProps = {
-  menuItem: any;
-  isLast: boolean;
-  openId: number | null;
-  toggleMenu: (id: number) => void;
+type DropdownProps = {
+  menu: any[];
+  left: number;
 };
-const MenuItem: React.FC<MenuItemProps> = ({
-  menuItem,
-  isLast,
-  openId,
-  toggleMenu,
-}) => {
-  const hasChildren = menuItem.children.length > 0;
+const Dropdown: React.FC<DropdownProps> = ({ menu, left }) => {
+  const target = document.getElementById("header-dropdown");
 
-  return (
-    <li className="flex items-center text-sm font-semibold uppercase lg:relative oswald">
-      <Link href={menuItem.url}>{menuItem.title}</Link>
+  if (!target) {
+    return null;
+  }
 
-      {hasChildren && (
-        <button
-          aria-label="Toggle Button"
-          className="flex items-center justify-center w-3 h-3 ml-1"
-          onClick={() => toggleMenu(menuItem.id)}
-        >
-          {openId === menuItem.id ? (
-            <RightAngle size={20} />
-          ) : (
-            <DownAngle size={20} />
-          )}
-        </button>
-      )}
-      {!isLast && <span className="h-4 w-[1px] ml-4 bg-gray-300"></span>}
-      {hasChildren && openId === menuItem.id && (
-        <div className="absolute left-0 right-0 z-10 py-1 bg-white border shadow-sm lg:w-52 lg:top-8 top-11 border-slate-100">
-          <ul>
-            {menuItem.children.map((child: any) => (
-              <li>
-                <Link
-                  className="px-3 py-[6px] block hover:bg-slate-100"
-                  href={child.url}
-                >
-                  {child.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </li>
+  return createPortal(
+    <div
+      className="absolute top-0 z-10 py-1 bg-white border shadow-sm dropdown-position lg:w-52 border-slate-100"
+      style={{
+        left,
+      }}
+    >
+      <ul>
+        {menu.map((child: any) => (
+          <li>
+            <Link
+              className="px-3 py-[6px] block hover:bg-slate-100"
+              href={child.url}
+            >
+              {child.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>,
+    target
   );
 };
 
