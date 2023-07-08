@@ -1,49 +1,123 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import NextImage from "next/image";
 import Link from "next/link";
 
 // Components
 import Wrapper from "@/common/components/Wrapper";
+import { useRouter } from "next/router";
 
 type ListingProps = {
   webStories: any[];
+  webStoryCategories: any[];
 };
-const Listing: React.FC<ListingProps> = ({ webStories }) => {
+const Listing: React.FC<ListingProps> = ({
+  webStories,
+  webStoryCategories: _webStoryCategories,
+}) => {
+  const { push, query } = useRouter();
+  const activeCategory = query.category || "";
+
+  const setActiveCategory = useCallback(
+    (category: string) => {
+      const query: any = {};
+
+      if (category) {
+        query.category = category;
+      }
+
+      push(
+        {
+          pathname: "/web-stories",
+          query,
+        },
+        undefined,
+        { shallow: true }
+      );
+    },
+    [push]
+  );
+
+  const webStoryCategories = useMemo(() => {
+    return [
+      {
+        name: "All",
+        slug: "",
+      },
+      ..._webStoryCategories,
+    ];
+  }, [_webStoryCategories]);
+
   return (
-    <section>
+    <>
       <Wrapper>
-        <ul className="flex flex-wrap gap-5">
-          {webStories.map((story) => (
-            <li
-              key={story.id}
-              className="relative p-2 overflow-hidden border-2 border-gray-500 rounded-full w-36 h-36 lg:w-48 lg:h-48"
-            >
-              <div className="w-full h-full overflow-hidden rounded-full">
-                {story.poster ? (
-                  <NextImage
-                    className="object-cover w-full h-full"
-                    src={story.poster.url}
-                    alt={`Story ${story.slug}`}
-                    height={(story.poster.height / story.poster.width) * 192}
-                    width={192}
-                    blurDataURL={story.poster.placeholder}
-                    placeholder="blur"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-300"></div>
-                )}
-              </div>
-              <Link
-                href={`/web-stories/${story.slug}`}
-                aria-label={`Story ${story.slug}`}
-              >
-                <div className="absolute top-0 left-0 w-full h-full bg-gray-600 bg-opacity-0 hover:bg-opacity-25"></div>
-              </Link>
-            </li>
-          ))}
+        <ul className="flex mb-8 border-b-2 border-secondary bg-slate-200">
+          {webStoryCategories.map((category: any) => {
+            const isActive = category.slug === activeCategory;
+
+            return (
+              <li>
+                <button
+                  className={`block h-10 px-6 font-medium ${
+                    isActive ? "bg-slate-300" : ""
+                  } `}
+                  onClick={() => {
+                    setActiveCategory(category.slug);
+                  }}
+                >
+                  {category.name}
+                </button>
+              </li>
+            );
+          })}
         </ul>
+
+        {_webStoryCategories.map((category: any) => {
+          const categoryStories = webStories.filter((story: any) =>
+            story.web_story_category.includes(category.id)
+          );
+
+          if (categoryStories.length < 1) return null;
+          if (activeCategory && category.slug !== activeCategory) return null;
+
+          return (
+            <section className="mb-6">
+              {!activeCategory && (
+                <h2 className="mb-3 text-4xl font-semibold">{category.name}</h2>
+              )}
+              <ul className="flex flex-wrap gap-2 p-2 bg-gray-100">
+                {categoryStories.slice().map((story) => (
+                  <li key={story.id} className="relative w-36 lg:w-48">
+                    <div className="w-full h-full">
+                      {story.poster ? (
+                        <NextImage
+                          className="object-cover w-full h-full"
+                          src={story.poster.url}
+                          alt={`Story ${story.slug}`}
+                          height={
+                            (story.poster.height / story.poster.width) * 192
+                          }
+                          width={192}
+                          blurDataURL={story.poster.placeholder}
+                          placeholder="blur"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-300"></div>
+                      )}
+                    </div>
+                    <Link
+                      href={`/web-stories/${story.slug}`}
+                      aria-label={`Story ${story.slug}`}
+                    >
+                      <div className="absolute top-0 left-0 w-full h-full bg-gray-600 bg-opacity-0 hover:bg-opacity-10"></div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })}
       </Wrapper>
-    </section>
+    </>
   );
 };
 

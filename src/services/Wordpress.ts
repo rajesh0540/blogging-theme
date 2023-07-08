@@ -24,9 +24,9 @@ class Wordpress {
   static async getLayoutData() {
     const globalAny: any = global;
 
-    if (globalAny.layoutCache) {
-      return globalAny.layoutCache;
-    }
+    // if (globalAny.layoutCache) {
+    //   return globalAny.layoutCache;
+    // }
 
     const login = await this.login({
       username: wordpressUsername,
@@ -35,7 +35,7 @@ class Wordpress {
 
     const siteData = await this.getSiteData();
     const categories = await this.getAllCategories(99);
-    const webStories = await this.getAllWebStories();
+    const webStories = await this.getAllWebStories(99);
 
     let headerMenu = [];
     if (headerMenuId) {
@@ -65,6 +65,7 @@ class Wordpress {
         return {
           poster: story.story_poster || null,
           slug: story.slug,
+          web_story_category: story.web_story_category,
         };
       }),
       headerMenu,
@@ -380,9 +381,22 @@ class Wordpress {
   /**
    * Web stories endpoints
    */
-  static async getAllWebStories() {
+  static async getAllWebStories(limit = 10) {
     try {
-      const response = await axiosInstacne.get("/web-stories/v1/web-story");
+      const response = await axiosInstacne.get(
+        `/web-stories/v1/web-story?per_page=${limit}`
+      );
+
+      return response.data;
+    } catch (e) {
+      return [];
+    }
+  }
+  static async getAllWebStoryCategories(limit = 10) {
+    try {
+      const response = await axiosInstacne.get(
+        `/web-stories/v1/web_story_category?per_page=${limit}`
+      );
 
       return response.data;
     } catch (e) {

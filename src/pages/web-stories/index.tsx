@@ -12,7 +12,10 @@ import Listing from "@/containers/WebStoryListing/Listing";
 import Wordpress from "@/services/Wordpress";
 import optimizeImage from "@/utils/functions/optimizeImage";
 
-const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
+const WebStoryListing: NextPage<{
+  layoutData: any;
+  webStoryCategories: any[];
+}> = ({ layoutData, webStoryCategories }) => {
   const { name, description, site_icon } = layoutData.siteData;
   const { webStories } = layoutData;
 
@@ -32,7 +35,10 @@ const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
         pagePath="/web-stories"
       />
       <Title name="Web Stories" />
-      <Listing webStories={webStories} />
+      <Listing
+        webStoryCategories={webStoryCategories}
+        webStories={webStories}
+      />
     </>
   );
 };
@@ -40,6 +46,7 @@ const WebStoryListing: NextPage<{ layoutData: any }> = ({ layoutData }) => {
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const layoutData = await Wordpress.getLayoutData();
+    const webStoryCategories = await Wordpress.getAllWebStoryCategories();
 
     for (const story of layoutData.webStories) {
       const posterUrl = story.poster?.url;
@@ -53,6 +60,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         layoutData,
+        webStoryCategories,
       },
     };
   } catch (e) {
