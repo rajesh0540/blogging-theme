@@ -66,6 +66,7 @@ class Wordpress {
           poster: story.story_poster || null,
           slug: story.slug,
           web_story_category: story.web_story_category,
+          title: story.title.rendered,
         };
       }),
       headerMenu,

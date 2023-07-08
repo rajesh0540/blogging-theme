@@ -85,33 +85,37 @@ const Listing: React.FC<ListingProps> = ({
                 <h2 className="mb-3 text-4xl font-semibold">{category.name}</h2>
               )}
               <ul className="flex flex-wrap gap-2 p-2 bg-gray-100">
-                {categoryStories.slice().map((story) => (
-                  <li key={story.id} className="relative w-36 lg:w-48">
-                    <div className="w-full h-full">
-                      {story.poster ? (
-                        <NextImage
-                          className="object-cover w-full h-full"
-                          src={story.poster.url}
-                          alt={`Story ${story.slug}`}
-                          height={
-                            (story.poster.height / story.poster.width) * 192
-                          }
-                          width={192}
-                          blurDataURL={story.poster.placeholder}
-                          placeholder="blur"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-300"></div>
-                      )}
-                    </div>
-                    <Link
-                      href={`/web-stories/${story.slug}`}
-                      aria-label={`Story ${story.slug}`}
-                    >
-                      <div className="absolute top-0 left-0 w-full h-full bg-gray-600 bg-opacity-0 hover:bg-opacity-10"></div>
-                    </Link>
-                  </li>
-                ))}
+                {categoryStories.slice().map((story) => {
+                  const width = 192;
+
+                  return (
+                    <li key={story.id} className="relative w-36 lg:w-48">
+                      <Link
+                        href={`/web-stories/${story.slug}`}
+                        aria-label={`Story ${story.slug}`}
+                      >
+                        {story.poster ? (
+                          <NextImage
+                            className="w-full"
+                            src={story.poster.url}
+                            alt={`Story ${story.slug}`}
+                            height={
+                              (story.poster.height / story.poster.width) * width
+                            }
+                            width={width}
+                            blurDataURL={story.poster.placeholder}
+                            placeholder="blur"
+                          />
+                        ) : (
+                          <div className="w-full aspect-[3/4] bg-gray-300"></div>
+                        )}
+                        <h3 className="mt-1 text-sm">
+                          {story.title || "Untitled"}
+                        </h3>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           );
