@@ -24,9 +24,9 @@ class Wordpress {
   static async getLayoutData() {
     const globalAny: any = global;
 
-    // if (globalAny.layoutCache) {
-    //   return globalAny.layoutCache;
-    // }
+    if (globalAny.layoutCache) {
+      return globalAny.layoutCache;
+    }
 
     const login = await this.login({
       username: wordpressUsername,
