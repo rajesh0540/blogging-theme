@@ -14,8 +14,8 @@ const WebStoriesComponent: React.FC<WebStoriesProps> = ({ webStories }) => {
     <>
       <div className="mb-5">
         <Wrapper>
-          <div className="max-w-[300px] lg:max-w-[500px] relative overflow-x-auto h-24 m-auto">
-            <div className="absolute top-0 left-0 min-w-[300px] lg:min-w-[500px]">
+          <div className="relative h-24 m-auto overflow-x-auto">
+            <div className="absolute top-0 left-0 min-w-full">
               <ul className="flex justify-center gap-2">
                 {webStories.map((story: any, index: number) => (
                   <li
