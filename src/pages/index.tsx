@@ -125,7 +125,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
     let trendingPosts = [];
     if (trendingCategoryId) {
-      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 5);
+      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 6);
       await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
     }
 

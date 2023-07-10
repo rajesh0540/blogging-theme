@@ -129,7 +129,9 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
                         id={`menu-item-${menuItem.id}`}
                         className="flex items-center text-sm font-semibold uppercase lg:relative oswald"
                       >
-                        <Link href={menuItem.url}>{menuItem.title}</Link>
+                        <Link className="whitespace-nowrap" href={menuItem.url}>
+                          {menuItem.title}
+                        </Link>
 
                         {hasChildren && (
                           <button
