@@ -25,7 +25,7 @@ const Footer: React.FC<FooterProps> = ({ siteData, footerMenu }) => {
               <img
                 className="w-[80px] block mx-auto"
                 src={./logo.webp}
-                alt={siteData?.name}
+                alt="Site Logo"
               />
             </div>
           )}
