@@ -34,6 +34,7 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
   return (
     <Head>
       <title>{title}</title>
+      {title && <meta name="title" content={title} />}
       {description && <meta name="description" content={description} />}
       {favIcon && <link rel="icon" href={favIcon} />}
       {favIcon && <link rel="apple-touch-icon" href={favIcon} />}
