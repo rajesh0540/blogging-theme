@@ -53,6 +53,7 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
           <meta property="og:image" content={og_image[0].url} />
           <meta property="og:image:width" content={og_image[0].width} />
           <meta property="og:image:height" content={og_image[0].height} />
+          <meta property="og:image:alt" content={title} />
           <meta property="og:image:type" content={og_image[0].type} />
         </>
       )}
