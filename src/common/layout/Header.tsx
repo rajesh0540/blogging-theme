@@ -101,11 +101,11 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
 
             <div>
               <a
-                href={`${process.env.WORDPRESS_URL}/wp-admin`}
+                href={`https://timesin.com/page/write-for-us`}
                 target="__blank"
                 rel="noreferrer"
               >
-                <Button variant="left">Sign in</Button>
+                <Button variant="left">Write For Us</Button>
               </a>
             </div>
           </div>
