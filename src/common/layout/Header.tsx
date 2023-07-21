@@ -9,6 +9,7 @@ import Button from "../components/Button";
 
 //
 import { Search, DownAngle, RightAngle } from "../components/Icon";
+import Title from "../containers/Title";
 
 type HeaderProps = {
   siteData: any;
@@ -78,8 +79,8 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
                   <h1 className="hidden">{siteData.name}</h1>
                   <img
                     className="h-[26px] lg:h-[34px] block"
-                    src={siteData.site_logo.src}
-                    alt="Site Logo"
+                    src="./logo.webp"
+                    alt={siteData?.name}
                   />
                 </Link>
               </div>
