@@ -43,12 +43,12 @@ const Home: NextPage<{
     <>
       <SEOYoast
         yoast_head_json={{
-          title: `Home - ${name}`,
+          title: `${name}`,
           description,
           favIcon: site_icon.src,
           og_locale: "en_US",
           og_type: "website",
-          og_title: `Home - ${name}`,
+          og_title: `${name}`,
           og_description: description,
           og_site_name: name,
           canonical,
