@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import Script from 'next/script'
 
 type SEOYoastProps = {
   yoast_head_json: any;
@@ -100,6 +101,25 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
           }}
         ></script>
       )}
+ 
+ function Home() {
+   return (
+     <div className="container">
+       <Script src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31" />
+       <Script id="google-analytics">
+         {`
+           window.dataLayer = window.dataLayer || [];
+           function gtag(){dataLayer.push(arguments);}
+           gtag('js', new Date());
+  
+           gtag('config', 'G-X3LT6JWW31');
+         `}
+       </Script>
+     </div>
+   )
+ }
+  
+ export default Home
     </Head>
   );
 };
