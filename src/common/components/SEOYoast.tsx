@@ -101,7 +101,6 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
         ></script>
       )}
 
-      <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
