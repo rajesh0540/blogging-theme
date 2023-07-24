@@ -27,7 +27,7 @@ const Details: React.FC<DetailsProps> = ({ post }) => {
         </Link>
       )}
       <h1
-        className="mb-6 text-5xl font-bold"
+        className="mb-6 text-3xl font-bold"
         dangerouslySetInnerHTML={{ __html: title.rendered }}
       ></h1>
       <div className="flex flex-col gap-3 lg:gap-0 lg:flex-row lg:justify-between lg:items-center">
