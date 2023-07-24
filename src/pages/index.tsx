@@ -51,6 +51,7 @@ const Home: NextPage<{
           og_title: `${name}`,
           og_description: description,
           og_site_name: name,
+          og_image:"https://wp.timesin.com/wp-content/uploads/2023/06/Im-a-food-safety-scientist-I-wont-eat-these-7-300x186.jpeg",
           canonical,
           og_url,
           schema,
