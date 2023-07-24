@@ -6,8 +6,7 @@ const handler: NextApiHandler = (req, res) => {
   return res.send(`User-agent: *
 Disallow:
 
-Sitemap: ${hostedUrl}/sitemap_index.xml`,
-Sitemap: ${hostedUrl}/news_sitemap.xml`);
+Sitemap: ${hostedUrl}/sitemap_index.xml`);
 };
 
 export default handler;
