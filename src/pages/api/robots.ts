@@ -7,6 +7,11 @@ const handler: NextApiHandler = (req, res) => {
 Disallow:
 
 Sitemap: ${hostedUrl}/sitemap_index.xml`);
+Sitemap: ${hostedUrl}/news_sitemap.xml`);
+Categories: ${hostedUrl}/category`);
+Tag: ${hostedUrl}/tag`);
+Author: ${hostedUrl}/author`);
+Page: ${hostedUrl}/page`);
 };
 
 export default handler;
