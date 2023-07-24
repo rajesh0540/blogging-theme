@@ -34,6 +34,14 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
   return (
     <Head>
       <title>{title}</title>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-X3LT6JWW31');
+</script>
       {title && <meta name="title" content={title} />}
       {description && <meta name="description" content={description} />}
       {favIcon && <link rel="icon" href={favIcon} />}
@@ -100,16 +108,6 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
           }}
         ></script>
       )}
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-X3LT6JWW31');
-</script>
-
     </Head>
   );
 };
