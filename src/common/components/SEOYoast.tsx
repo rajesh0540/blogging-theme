@@ -1,25 +1,5 @@
 import React from "react";
 import Head from "next/head";
-import Script from 'next/script'
-
-function Home() {
-  return (
-    <div className="container">
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31" />
-      <Script id="google-analytics">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
- 
-          gtag('config', 'G-X3LT6JWW31');
-        `}
-      </Script>
-    </div>
-  )
-}
- 
-export default Home
 
 type SEOYoastProps = {
   yoast_head_json: any;
