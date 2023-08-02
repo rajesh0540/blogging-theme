@@ -49,7 +49,7 @@ const RelatedPosts: React.FC<RelatedPostsProps> = ({
     <section className="mb-[60px]">
       <Wrapper size="medium">
         <PostSubHeading>Related Posts</PostSubHeading>
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
           {posts.map((post) => (
             <Post1 key={post.id} post={post} />
           ))}
