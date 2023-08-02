@@ -16,7 +16,7 @@ import MoreNews from "@/containers/Home/MoreNews";
 import Wordpress from "@/services/Wordpress";
 import optimizeImage from "@/utils/functions/optimizeImage";
 
-let resultsPerPage = 9;
+let resultsPerPage = 13;
 const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
 const featuredCategoryId = Number(process.env.FEATURED_CATEGORY_ID);
 
@@ -98,7 +98,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
     const categoriesWithPosts = [];
     for (const category of layoutData.categories) {
-      if (categoriesWithPosts.length === 4) break;
+      if (categoriesWithPosts.length === 9) break;
       if ([trendingCategoryId, featuredCategoryId].includes(category.id)) {
         continue;
       }
