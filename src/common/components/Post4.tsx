@@ -35,7 +35,7 @@ const Post4: React.FC<Post4Props> = ({
           />
         </Link>
       </figure>
-      <div className="flex-1 pt-9 pl-4 lg:pt-8 lg:pl-8">
+      <div className="flex-1 pt-9 pl-9 lg:pt-8 lg:pl-8">
         <div className="mb-1">
           <Category category={category} postedDate={date} />
         </div>
