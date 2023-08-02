@@ -89,8 +89,8 @@ const Sidebar: React.FC<SidebarProps> = ({ latestPosts, popularPosts }) => {
           );
         })}
       </ul>
-      <div className="flex flex-col gap-9 mb-5">
-        {tab.posts.map((post) => (
+      <div className="flex flex-col gap-4">
+        {tab.posts.slice(0, 9)map((post) => (
           <Post3 key={post.id} post={post} />
         ))}
       </div>
