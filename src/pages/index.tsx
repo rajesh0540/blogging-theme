@@ -98,7 +98,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
     const categoriesWithPosts = [];
     for (const category of layoutData.categories) {
-      if (categoriesWithPosts.length === 9) break;
+      if (categoriesWithPosts.length === 4) break;
       if ([trendingCategoryId, featuredCategoryId].includes(category.id)) {
         continue;
       }
