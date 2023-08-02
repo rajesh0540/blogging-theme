@@ -31,10 +31,6 @@ export const sitemap_index = async () => {
       lastModified: "",
     },
     {
-      fileName: "news_sitemap.xml",
-      lastModified: "",
-    },
-    {
       fileName: "web-story-sitemap.xml",
     },
   ];
