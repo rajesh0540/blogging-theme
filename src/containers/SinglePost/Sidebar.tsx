@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ latestPosts, popularPosts }) => {
           />
         </form>
       </div>
-      <ul className="flex justify-center gap-4 mb-4">
+      <ul className="flex justify-center gap-4 mb-9">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
 
