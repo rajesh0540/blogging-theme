@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
                   <h1 className="hidden">{siteData.name}</h1>
                   <img
                     className="h-[26px] lg:h-[34px] block"
-                    src="./logo.webp"
+                    src="https://wp.timesin.com/wp-content/uploads/2023/08/Timesin.png"
                     alt={siteData?.name}
                   />
                 </Link>
