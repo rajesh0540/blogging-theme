@@ -6,8 +6,7 @@ import Wordpress from "@/services/Wordpress";
 const wpUrl = process.env.WORDPRESS_URL;
 const hostedUrl = process.env.HOSTED_URL;
 
-export const sitemap_index = async (req, res) => {
-  res.setHeader('Content-Type', 'application/xml'); // Set Content-Type header
+export const sitemap_index = async () => {
   const sitemap = await Wordpress.getIndexSitemap();
 
   const sitemapData = [
@@ -34,7 +33,6 @@ export const sitemap_index = async (req, res) => {
     {
       fileName: "web-story-sitemap.xml",
     },
-    res.send(xmlContent);
   ];
 
   const document = htmlparser2.parseDocument(sitemap, {
