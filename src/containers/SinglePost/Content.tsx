@@ -19,6 +19,7 @@ const Content: React.FC<ContentProps> = ({ post }) => {
       {featured_media ? (
         <figure className="flex flex-col items-center mb-8">
           <Image
+            id="primaryimage"
             src={featured_media.full.src}
             alt={featured_media.alt || `${title.rendered} featured media`}
             width={760}

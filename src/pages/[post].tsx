@@ -20,6 +20,7 @@ import optimizeImage from "@/utils/functions/optimizeImage";
 
 const resultsPerPage = 4;
 const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
+const hostedUrl = process.env.HOSTED_URL || "";
 
 const SinglePost: NextPage<{
   layoutData: any;
@@ -138,6 +139,41 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
     }
 
+    /**
+     * Updaing post schema
+     */
+    if (post.featured_media) {
+      const nodes = post.yoast_head_json.schema["@graph"];
+      const mediaId = `${hostedUrl}/${post.slug}#primaryimage`;
+      const fullUrl = post.featured_media.full.src;
+
+      nodes.forEach((node: any) => {
+        const nodeType = node["@type"];
+        if (["NewsArticle", "WebPage"].includes(nodeType)) {
+          node.thumbnailUrl = fullUrl;
+          node.image = {
+            "@id": mediaId,
+          };
+        }
+        if (nodeType === "WebPage") {
+          node.primaryImageOfPage = {
+            "@id": mediaId,
+          };
+        }
+      });
+
+      nodes.push({
+        "@type": "ImageObject",
+        inLanguage: "en-US",
+        "@id": mediaId,
+        url: fullUrl,
+        contentUrl: fullUrl,
+        width: post.featured_media.full.width,
+        height: post.featured_media.full.height,
+        caption: post.featured_media.alt,
+      });
+    }
+
     return {
       props: {
         layoutData,
@@ -149,6 +185,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: 1800,
     };
   } catch (e) {
+    console.log("e >>", e);
+
     return {
       notFound: true,
       revalidate: 10,

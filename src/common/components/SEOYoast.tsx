@@ -31,12 +31,20 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
   const pageUrl = `${hostedUrl}${pagePath}`;
   const wordpressOrigin = og_url ? new URL(og_url).origin : hostedUrl;
 
+  changeSchemaUrlOrigins(schema, {
+    [canonical]: pageUrl,
+    [wordpressOrigin]: hostedUrl,
+  });
+
   return (
     <Head>
       <title>{title}</title>
-      
-     {/* Add the Google Tag Manager code here */}
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31"></script>
+
+      {/* Add the Google Tag Manager code here */}
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-X3LT6JWW31"
+      ></script>
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -110,14 +118,36 @@ const SEOYoast: React.FC<SEOYoastProps> = ({ yoast_head_json, pagePath }) => {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schema)
-              .replaceAll(canonical, pageUrl)
-              .replaceAll(wordpressOrigin, hostedUrl),
+            __html: JSON.stringify(schema),
           }}
         ></script>
       )}
     </Head>
   );
+};
+
+const changeSchemaUrlOrigins = (
+  schema: any,
+  replacers: Record<string, string>
+) => {
+  for (const key in schema) {
+    const value = schema[key];
+
+    if (typeof value === "string") {
+      const valueParts = value.split(".");
+      const extension = valueParts[valueParts.length - 1];
+      const isImage = ["png", "jpg", "jpeg", "svg"].includes(extension);
+
+      if (!isImage) {
+        for (const replacer in replacers) {
+          const replaceWith = replacers[replacer];
+          schema[key] = value.replace(replacer, replaceWith);
+        }
+      }
+    } else if (typeof value === "object") {
+      changeSchemaUrlOrigins(value, replacers);
+    }
+  }
 };
 
 export default SEOYoast;
