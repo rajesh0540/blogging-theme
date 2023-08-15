@@ -75,8 +75,11 @@ export const sitemap_index = async () => {
 };
 
 export const sitemap_news = async () => {
+  const dateNow = new Date();
+  const twoWeeksAgo = new Date(dateNow.getTime() - 14 * 24 * 60 * 60 * 1000);
+
   const { name } = await Wordpress.getSiteData();
-  const posts = await Wordpress.getAllPosts(99);
+  const posts = await Wordpress.getAllPosts(99, 1, twoWeeksAgo.toISOString());
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">

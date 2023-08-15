@@ -109,10 +109,11 @@ class Wordpress {
   /**
    * Post endpoints
    */
-  static async getAllPosts(limit = 10, page = 1) {
-    const response = await axiosInstacne.get(
-      `/wp/v2/posts?per_page=${limit}&page=${page}`
-    );
+  static async getAllPosts(limit = 10, page = 1, after = "") {
+    const path = `/wp/v2/posts?per_page=${limit}&page=${page}${
+      after ? `&after=${after}` : ""
+    }`;
+    const response = await axiosInstacne.get(path);
 
     return response.data;
   }
