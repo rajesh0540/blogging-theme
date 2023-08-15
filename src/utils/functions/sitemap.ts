@@ -11,27 +11,38 @@ export const sitemap_index = async () => {
 
   const sitemapData = [
     {
+      parent: "sitemap",
       fileName: "post-sitemap.xml",
       lastModified: "",
     },
     {
+      parent: "sitemap",
       fileName: "page-sitemap.xml",
       lastModified: "",
     },
     {
+      parent: "sitemap",
       fileName: "category-sitemap.xml",
       lastModified: "",
     },
     {
+      parent: "sitemap",
       fileName: "post_tag-sitemap.xml",
       lastModified: "",
     },
     {
+      parent: "sitemap",
       fileName: "author-sitemap.xml",
       lastModified: "",
     },
     {
+      parent: "sitemap",
       fileName: "web-story-sitemap.xml",
+      lastModified: "",
+    },
+    {
+      fileName: "news_sitemap.xml",
+      lastModified: new Date().toISOString(),
     },
   ];
 
@@ -64,10 +75,10 @@ export const sitemap_index = async () => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${sitemapData
-      .map((sitemap) => {
+      .map(({ parent, fileName, lastModified }) => {
         return `<sitemap>
-        <loc>${hostedUrl}/sitemap/${sitemap.fileName}</loc>
-        <lastmod>${sitemap.lastModified}</lastmod>
+        <loc>${hostedUrl}/${parent ? `${parent}/` : ""}${fileName}</loc>
+        <lastmod>${lastModified}</lastmod>
     </sitemap>`;
       })
       .join("\n    ")}
