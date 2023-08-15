@@ -87,7 +87,7 @@ export const sitemap_news = async () => {
     <news:news>
       <news:publication>
         <news:name>${name}</news:name>
-        <news:language>en_US</news:language>
+        <news:language>en</news:language>
       </news:publication>
       <news:publication_date>${post.date}</news:publication_date>
       <news:title>${post.title.rendered}</news:title>

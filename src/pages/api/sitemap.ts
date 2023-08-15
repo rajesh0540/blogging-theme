@@ -18,6 +18,8 @@ const handler: NextApiHandler = async (req, res) => {
 
   const sitemap = await _sitemap(fileName, locationPrefix);
 
+  res.setHeader("Content-Type", "application/xml");
+
   return res.send(sitemap);
 };
 
