@@ -185,8 +185,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: 1800,
     };
   } catch (e) {
-    console.log("e >>", e);
-
     return {
       notFound: true,
       revalidate: 10,
