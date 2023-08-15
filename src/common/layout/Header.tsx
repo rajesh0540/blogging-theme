@@ -9,6 +9,7 @@ import Button from "../components/Button";
 
 //
 import { Search, DownAngle, RightAngle } from "../components/Icon";
+import Title from "../containers/Title";
 
 type HeaderProps = {
   siteData: any;
@@ -78,8 +79,8 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
                   <h1 className="hidden">{siteData.name}</h1>
                   <img
                     className="h-[26px] lg:h-[34px] block"
-                    src={siteData.site_logo.src}
-                    alt="Site Logo"
+                    src="https://wp.timesin.com/wp-content/uploads/2023/08/Timesin.webp"
+                    alt={siteData?.name}
                   />
                 </Link>
               </div>
@@ -101,11 +102,11 @@ const Header: React.FC<HeaderProps> = ({ siteData, headerMenu }) => {
 
             <div>
               <a
-                href={`${process.env.WORDPRESS_URL}/wp-admin`}
+                href={`https://timesin.com/page/write-for-us`}
                 target="__blank"
                 rel="noreferrer"
               >
-                <Button variant="left">Sign in</Button>
+                <Button variant="left">Write For Us</Button>
               </a>
             </div>
           </div>

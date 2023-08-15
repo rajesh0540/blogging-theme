@@ -16,7 +16,7 @@ import MoreNews from "@/containers/Home/MoreNews";
 import Wordpress from "@/services/Wordpress";
 import optimizeImage from "@/utils/functions/optimizeImage";
 
-let resultsPerPage = 9;
+let resultsPerPage = 13;
 const trendingCategoryId = Number(process.env.TRENDING_CATEGORY_ID);
 const featuredCategoryId = Number(process.env.FEATURED_CATEGORY_ID);
 
@@ -43,12 +43,12 @@ const Home: NextPage<{
     <>
       <SEOYoast
         yoast_head_json={{
-          title: `Home - ${name}`,
+          title: `${name}`,
           description,
           favIcon: site_icon.src,
           og_locale: "en_US",
           og_type: "website",
-          og_title: `Home - ${name}`,
+          og_title: `${name}`,
           og_description: description,
           og_site_name: name,
           canonical,
@@ -125,13 +125,13 @@ export const getStaticProps: GetStaticProps = async () => {
 
     let trendingPosts = [];
     if (trendingCategoryId) {
-      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 6);
+      trendingPosts = await Wordpress.getCategoryPosts([trendingCategoryId], 5);
       await Wordpress.populatePostsImages(trendingPosts, optimizeImage);
     }
 
     let featuredPosts = [];
     if (featuredCategoryId) {
-      featuredPosts = await Wordpress.getCategoryPosts([featuredCategoryId], 6);
+      featuredPosts = await Wordpress.getCategoryPosts([featuredCategoryId], 3);
       await Wordpress.populatePostsImages(featuredPosts, optimizeImage);
     }
 

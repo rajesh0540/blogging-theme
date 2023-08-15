@@ -62,7 +62,7 @@ const MoreNews: React.FC<MoreNewsProps> = ({
             </div>
           </div>
           <div className="flex flex-col gap-4 md:col-span-1">
-            {_posts.slice(4).map((post) => (
+            {_posts.slice(9).map((post) => (
               <Post3 key={post.id} post={post} />
             ))}
           </div>
