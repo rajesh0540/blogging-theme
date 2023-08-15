@@ -82,6 +82,8 @@ export const sitemap_news = async () => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   ${posts
     .map((post: any) => {
+      const date = new Date(post.date);
+
       return `<url>
     <loc>${hostedUrl}/${post.slug}</loc>
     <news:news>
@@ -89,7 +91,9 @@ export const sitemap_news = async () => {
         <news:name>${name}</news:name>
         <news:language>en</news:language>
       </news:publication>
-      <news:publication_date>${post.date}</news:publication_date>
+      <news:publication_date>${formatDateToYYYYMMDD(
+        date
+      )}</news:publication_date>
       <news:title>${post.title.rendered}</news:title>
     </news:news>
   </url>`;
@@ -144,3 +148,11 @@ export const sitemap = async (fileName: string, locationPrefix = "") => {
     .join("\n  ")}
 </urlset>`;
 };
+
+function formatDateToYYYYMMDD(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
