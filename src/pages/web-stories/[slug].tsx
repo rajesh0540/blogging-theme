@@ -17,8 +17,6 @@ const WebStory: NextPage<WebStoryProps> = ({ webStory, site_icon }) => {
   const { yoast_head_json, slug, link } = webStory;
   yoast_head_json.favIcon = site_icon.src;
 
-  console.log("webStory >>", webStory);
-
   return (
     <>
       <SEOYoast
