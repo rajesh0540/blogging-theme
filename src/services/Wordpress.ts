@@ -172,6 +172,7 @@ class Wordpress {
         placeholder: "",
       },
       alt: "No image found",
+      caption: "",
     };
 
     const ids = posts.map((post) => post.featured_media).filter((id) => id);
@@ -221,6 +222,7 @@ class Wordpress {
           placeholder: thumbnailOptimized?.placeholder || "",
         },
         alt: media.alt_text,
+        caption: media.caption.rendered,
       };
     }
   }
@@ -324,8 +326,16 @@ class Wordpress {
     } = response.data;
 
     return {
-      full: full.source_url,
-      thumbnail: thumbnail.source_url,
+      full: {
+        src: full.source_url,
+        height: full.height,
+        width: full.width,
+      },
+      thumbnail: {
+        src: thumbnail.source_url,
+        height: thumbnail.height,
+        width: thumbnail.width,
+      },
       caption: rendered,
       alt: alt_text,
     };
