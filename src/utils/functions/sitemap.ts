@@ -99,7 +99,7 @@ export const sitemap_news = async () => {
       const date = new Date(post.date);
 
       return `<url>
-    <loc>${hostedUrl}/${post.slug}</loc>
+    <loc>${hostedUrl}/${post.slug}/</loc>
     <news:news>
       <news:publication>
         <news:name>${name}</news:name>
