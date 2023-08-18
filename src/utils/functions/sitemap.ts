@@ -77,7 +77,7 @@ export const sitemap_index = async () => {
     ${sitemapData
       .map(({ parent, fileName, lastModified }) => {
         return `<sitemap>
-        <loc>${hostedUrl}/${parent ? `${parent}` : ""}${fileName}</loc>
+        <loc>${hostedUrl}/${parent ? `${parent}/` : ""}${fileName}</loc>
         <lastmod>${lastModified}</lastmod>
     </sitemap>`;
       })
